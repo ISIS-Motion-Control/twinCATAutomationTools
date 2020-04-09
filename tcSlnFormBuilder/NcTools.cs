@@ -16,34 +16,32 @@ namespace tcSlnFormBuilder
         public String ncXmlPath = @"C:\Users\bem74844\tcSln\sln3\myTwinCATSln";
         public String ncXmlName = "xmlMap";
 
-        public bool createNcTask(ITcSysManager13 systemManager)
+        public Boolean createNcTask(ITcSysManager13 systemManager)
         {
             try
             {
                 ITcSmTreeItem ncConfig = systemManager.LookupTreeItem("TINC");
-                ncConfig.CreateChild("NC-Task", 1);
-                MessageBox.Show("Task created");
+                ncConfig.CreateChild("NC-Task 1", 1);
                 return true;
             }
             catch
             {
-                MessageBox.Show("Failed to create NC", "OH DEAR");
                 return false ;
             }
         }
-        public bool addNcAxis(ITcSysManager13 systemManager)
+        public Boolean addNcAxis(ITcSysManager13 systemManager)
         {
             try
             {
                 ITcSmTreeItem axes = systemManager.LookupTreeItem("TINC").Child[1].LookupChild("Axes");
-                MessageBox.Show((axes.ChildCount).ToString());
-                axes.CreateChild("Axis " + (axes.ChildCount + 1).ToString(), (axes.ChildCount + 1));
-                MessageBox.Show("That somehow worked");
+                //MessageBox.Show((axes.ChildCount).ToString());
+                axes.CreateChild("Axis " + (axes.ChildCount + 1).ToString(), 1);
+                //MessageBox.Show("That somehow worked");
                 return true;
             }
             catch
             {
-                MessageBox.Show("Not a chance sonny");
+                //MessageBox.Show("Not a chance sonny");
                 return false;
             }
             
@@ -64,6 +62,20 @@ namespace tcSlnFormBuilder
         public bool removeAxis() //NOT IMPLEMENTED
         {
             return false;
+        }
+
+        public Boolean ncAxisConsumeMap(ITcSmTreeItem axis, String xmlDoc)
+        {
+            try
+            {
+                //MessageBox.Show(xmlDoc.OuterXml);
+                axis.ConsumeXml(xmlDoc);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
 

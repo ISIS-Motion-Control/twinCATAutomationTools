@@ -24,6 +24,8 @@ namespace tcSlnFormBuilder
             labelBaseDir.Text = mySln.SlnBasePath;
             xmlSaveDirectory.Text = mySln.xmlTools.xmlPath;
             xmlName.Text = mySln.xmlTools.xmlName;
+            solutionFileSelect.Text = mySln.completeSolutionPath;
+            xmlFileSelectHW.Text = mySln.xmlHwMapPath;
         }
 
         private void butCreateSolution_Click(object sender, EventArgs e)
@@ -132,6 +134,55 @@ namespace tcSlnFormBuilder
         private void butGrabProject_Click(object sender, EventArgs e)
         {
             mySln.grabFirstProject();
+        }
+
+        private void solutonFileSelect_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void solutionFileSelect_Click(object sender, EventArgs e)
+        {
+            openSolutionSelect.ShowDialog();
+            solutionFileSelect.Text = openSolutionSelect.FileName;
+            mySln.completeSolutionPath = openSolutionSelect.FileName;
+        }
+
+        private void xmlFileSelectHW_MouseClick(object sender, MouseEventArgs e)
+        {
+            openSolutionSelect.ShowDialog();
+            xmlFileSelectHW.Text = openSolutionSelect.FileName;
+            
+        }
+
+        private void butAddHardware_Click(object sender, EventArgs e)
+        {
+            mySln.setupTestCrate();
+        }
+
+        private void xmlFolderSelect_Click(object sender, EventArgs e)
+        {
+            folderBrowserDialog2.ShowDialog();
+            xmlFolderSelect.Text = folderBrowserDialog2.SelectedPath;
+            mySln.xmlFolderPath = folderBrowserDialog2.SelectedPath;
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            mySln.exportHW();
+        }
+
+        private void toolStripProgressBar1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void butOpenDTE_MouseClick(object sender, MouseEventArgs e)
+        {
+                mySln.CreateDTE(toolStripComboBox1.Text, true, false, true);
+
+           
         }
     }
 }

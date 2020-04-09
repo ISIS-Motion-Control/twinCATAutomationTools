@@ -8,3 +8,14 @@ C:\Users\bem7484403\source\repos\tcSlnFormBuilder\bin\Debug\tcSlnFormBuilder.pdb
 C:\Users\bem7484403\source\repos\tcSlnFormBuilder\obj\Debug\tcSlnFormBuilder.exe
 C:\Users\bem7484403\source\repos\tcSlnFormBuilder\obj\Debug\tcSlnFormBuilder.pdb
 C:\Users\bem7484403\source\repos\tcSlnFormBuilder\obj\Debug\tcSlnFormBuilder.Form1.resources
+C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\twinCATAutomationTools\tcSlnFormBuilder\bin\Debug\tcSlnFormBuilder.exe.config
+C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\twinCATAutomationTools\tcSlnFormBuilder\bin\Debug\tcSlnFormBuilder.exe
+C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\twinCATAutomationTools\tcSlnFormBuilder\bin\Debug\tcSlnFormBuilder.pdb
+C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\twinCATAutomationTools\tcSlnFormBuilder\obj\Debug\tcSlnFormBuilder.csprojAssemblyReference.cache
+C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\twinCATAutomationTools\tcSlnFormBuilder\obj\Debug\tcSlnFormBuilder.csproj.ResolveComReference.cache
+C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\twinCATAutomationTools\tcSlnFormBuilder\obj\Debug\tcSlnFormBuilder.Form1.resources
+C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\twinCATAutomationTools\tcSlnFormBuilder\obj\Debug\tcSlnFormBuilder.Properties.Resources.resources
+C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\twinCATAutomationTools\tcSlnFormBuilder\obj\Debug\tcSlnFormBuilder.csproj.GenerateResource.cache
+C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\twinCATAutomationTools\tcSlnFormBuilder\obj\Debug\tcSlnFormBuilder.csproj.CoreCompileInputs.cache
+C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\twinCATAutomationTools\tcSlnFormBuilder\obj\Debug\tcSlnFormBuilder.exe
+C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\twinCATAutomationTools\tcSlnFormBuilder\obj\Debug\tcSlnFormBuilder.pdb
