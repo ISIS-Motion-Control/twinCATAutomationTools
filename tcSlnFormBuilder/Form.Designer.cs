@@ -489,7 +489,6 @@
             // toolStripComboBox1
             // 
             this.toolStripComboBox1.DropDownWidth = 150;
-            this.toolStripComboBox1.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.toolStripComboBox1.Items.AddRange(new object[] {
             "VS_2010",
             "VS_2012",
@@ -500,6 +499,7 @@
             "TWINCAT_SHELL"});
             this.toolStripComboBox1.Name = "toolStripComboBox1";
             this.toolStripComboBox1.Size = new System.Drawing.Size(180, 33);
+            this.toolStripComboBox1.Text = "TWINCAT_SHELL";
             // 
             // butOpenDTE
             // 
@@ -515,7 +515,7 @@
             // pictureBox1
             // 
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(1378, 477);
+            this.pictureBox1.Location = new System.Drawing.Point(1086, 442);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(533, 420);
             this.pictureBox1.TabIndex = 38;

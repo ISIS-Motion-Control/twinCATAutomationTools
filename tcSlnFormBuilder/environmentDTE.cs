@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace tcSlnFormBuilder
 {
+
     class environmentDTE
     {
-        //opens the visual studio environment
         public EnvDTE.DTE dte;
         public EnvDTE.DTE getDTE(VSVersion version, bool supressUI, bool windowVisible)
         {
@@ -18,5 +18,24 @@ namespace tcSlnFormBuilder
             dte.MainWindow.Visible = windowVisible;
             return dte;
         }
+        
+        public dynamic CreateDTE(string appID, bool ideVisible, bool suppressUI, bool userControl)
+        {
+            Type tp = Type.GetTypeFromProgID(VSVersion.ReturnVersion(appID));
+            if (tp == null)
+                throw new ApplicationException($"AppID '{appID}' not found!");
+            dynamic dte = System.Activator.CreateInstance(tp, true);
+            if (!MessageFilter.IsRegistered)
+                MessageFilter.Register();
+            dte.MainWindow.WindowState = 0;
+            dte.MainWindow.Visible = ideVisible;
+            dte.SuppressUI = suppressUI;
+            dte.UserControl = userControl;
+            return dte;
+
+        }
+
     }
+
+
 }

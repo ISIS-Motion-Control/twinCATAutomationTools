@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EtherCATMailbox>
+	<CoE>
+		<InitCmds>
+			<InitCmd>
+				<Transition>IP</Transition>
+				<Timeout>0</Timeout>
+				<Ccs>1</Ccs>
+				<Index>61569</Index>
+				<SubIndex>1</SubIndex>
+				<Data>34001000</Data>
+			</InitCmd>
+			<InitCmd>
+				<Transition>IP</Transition>
+				<Timeout>0</Timeout>
+				<Ccs>1</Ccs>
+				<Index>4339</Index>
+				<SubIndex>5</SubIndex>
+				<Data>0100</Data>
+			</InitCmd>
+			<InitCmd>
+				<Transition>PS</Transition>
+				<Comment><![CDATA[Maximal current]]></Comment>
+				<Timeout>0</Timeout>
+				<Ccs>1</Ccs>
+				<Index>32784</Index>
+				<SubIndex>1</SubIndex>
+				<Data>dc05</Data>
+			</InitCmd>
+			<InitCmd>
+				<Transition>PS</Transition>
+				<Comment><![CDATA[Reduced current]]></Comment>
+				<Timeout>0</Timeout>
+				<Ccs>1</Ccs>
+				<Index>32784</Index>
+				<SubIndex>2</SubIndex>
+				<Data>f401</Data>
+			</InitCmd>
+			<InitCmd>
+				<Transition>PS</Transition>
+				<Comment><![CDATA[Nominal voltage]]></Comment>
+				<Timeout>0</Timeout>
+				<Ccs>1</Ccs>
+				<Index>32784</Index>
+				<SubIndex>3</SubIndex>
+				<Data>c05d</Data>
+			</InitCmd>
+			<InitCmd>
+				<Transition>PS</Transition>
+				<Comment><![CDATA[Speed range]]></Comment>
+				<Timeout>0</Timeout>
+				<Ccs>1</Ccs>
+				<Index>32786</Index>
+				<SubIndex>5</SubIndex>
+				<Data>01</Data>
+			</InitCmd>
+		</InitCmds>
+	</CoE>
+</EtherCATMailbox>

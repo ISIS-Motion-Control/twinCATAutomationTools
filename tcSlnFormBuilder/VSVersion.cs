@@ -17,7 +17,7 @@ namespace tcSlnFormBuilder
         public static readonly VSVersion TWINCAT_SHELL = new VSVersion("TcXaeShell.DTE.15.0");
 
         public String DTEDesc;
-        public VSVersion(String DTEDesc)
+        private VSVersion(String DTEDesc)
         {
             this.DTEDesc = DTEDesc;
         }

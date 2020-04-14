@@ -63,41 +63,45 @@ namespace tcSlnFormBuilder
         }
 
 
-        public dynamic CreateDTE(string appID, bool ideVisible, bool suppressUI, bool userControl)
+        /// <summary>
+        /// Quick setup method for opening TWINCAT_XAE
+        /// Contains default parameters for visibility
+        /// </summary>
+        /// <returns>Visual Studio Solution Object</returns>
+        public Solution quickSetupDTE()
         {
-            Type tp = Type.GetTypeFromProgID(VSVersion.ReturnVersion(appID));     
-            if (tp == null)
-                throw new ApplicationException($"AppID '{appID}' not found!");
-            dynamic dte = System.Activator.CreateInstance(tp, true);
-            if (!MessageFilter.IsRegistered)
-                MessageFilter.Register();
-            dte.MainWindow.WindowState = 0;
-            dte.MainWindow.Visible = ideVisible;
-            dte.SuppressUI = suppressUI;
-            dte.UserControl = userControl;
-            return dte;
-            
+            return setupDTE("TWINCAT_SHELL", true, false, true);
         }
 
-
         /// <summary>
-        /// Start visual studio instance and register message filter
+        /// Create visual studio instance
         /// </summary>
-        /// <returns></returns>
-        private Solution setupDTE(VSVersion version) 
+        /// <param name="appID">Visual studio version</param>
+        /// <param name="ideVisible">Visibility</param>
+        /// <param name="suppressUI">No idea</param>
+        /// <param name="userControl">Allow user control</param>
+        /// <returns>Visual Studio Solution Object</returns>
+        public Solution setupDTE(string appID, bool ideVisible, bool suppressUI, bool userControl)
         {
             if (!MessageFilter.IsRegistered)
                 MessageFilter.Register();
-            environmentDTE vsDTE = new environmentDTE(); //class for holding DTE dependent on VS version          
-            vsDTE.dte = vsDTE.getDTE(version, false, true); //get the DTE
+            environmentDTE vsDTE = new environmentDTE();          
+            vsDTE.dte = vsDTE.CreateDTE(appID, ideVisible, suppressUI, userControl); 
             return vsDTE.dte.Solution;
         }
 
-
-
-
-        public void create() //Create TwinCAT solution and add the TwinCAT "PROJECT" structure
+        /// <summary>
+        /// Creates a TwinCAT solution using the default TwinCAT project template
+        /// </summary>
+        /// <param name="slnPath"></param>
+        /// <param name="slnName"></param>
+        public void createTcProj(string slnPath, string slnName) //Create TwinCAT solution and add the TwinCAT "PROJECT" structure
         {
+            DialogResult dialogResult = MessageBox.Show($"This will erase all folder contents of {slnPath}. Are you sure you want to continue?", "Warning", MessageBoxButtons.YesNo);
+            if(dialogResult == DialogResult.No)
+            {
+                return;
+            }
             if (System.IO.Directory.Exists(slnPath))
             {
                 try
@@ -113,55 +117,76 @@ namespace tcSlnFormBuilder
                     }
                     catch
                     {
-                        MessageBox.Show("Issue accessing folder directory");
-                        return;
+                        throw new ApplicationException("Issue accessing directory");
                     }
                 }
             }
-            solution = setupDTE(VSVersion.TWINCAT_SHELL);
+            solution = quickSetupDTE();
             System.IO.Directory.CreateDirectory(slnPath);
-
             solution.Create(slnPath, slnName);
             try
             {
                 saveAs(solution, slnPath, slnName);
-
             }
             catch
             {
-                MessageBox.Show("Solution won't save");
+                throw new ApplicationException("Solution can't save, check user rights");
             }
-            string template = @"C:\TwinCAT\3.1\Components\Base\PrjTemplate\TwinCAT Project.tsproj"; //path toproject template
 
+            //Add the TwinCAT Project template. Method will attempt to do this automatically and prompt user if file cannot be found
+            string template = @"C:\TwinCAT\3.1\Components\Base\PrjTemplate\TwinCAT Project.tsproj"; //Default
             try
             {
-                project = solution.AddFromTemplate(template, slnPath + @"\" + slnName, "MyProject", false);
+                project = solution.AddFromTemplate(template, slnPath + @"\" + slnName, slnName, false);
             }
             catch
             {
-                MessageBox.Show("Unable to add TwinCAT Solution template"); //Change the template so it detects version installed and knows where to look
-                return;
+                dialogResult = MessageBox.Show("Unable to add TwinCAT Solution template. Do you want to try to select the template project manually?", "Warning",MessageBoxButtons.YesNo); //Change the template so it detects version installed and knows where to look
+                if (dialogResult == DialogResult.Yes)
+                {
+                    using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                    {
+                        openFileDialog.InitialDirectory = @"C:\\";
+                        if (openFileDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            template = openFileDialog.FileName;
+                        }
+                        try
+                        {
+                            project = solution.AddFromTemplate(template, slnPath + @"\" + slnName, slnName, false);
+                        }
+                        catch
+                        {
+                            throw new ApplicationException($"No compatible TwinCAT Project Template found");
+                        }
+                    }
+                }
             }
             systemManager = project.Object;
             project.Save();
             saveAs(solution, slnPath, slnName);
         }
+
+
+
         public Solution openSolution()    //Open existing TwinCAT solution
         {
-            solution = setupDTE(VSVersion.TWINCAT_SHELL);
+            solution = quickSetupDTE();
             solution.Open(slnPath + @"\" + slnName + @".sln");
             return solution;
         }
         public Solution openSolution2(String solutionFilePath)    //Open existing TwinCAT solution
         {
-            solution = setupDTE(VSVersion.TWINCAT_SHELL);
+            solution = quickSetupDTE();
             solution.Open(solutionFilePath);
             return solution;
         }
 
+
+
         public void createPLC() //NOT IMPLEMENTED
         {
-         
+            throw new NotImplementedException();
         }
         public void findPLCProject()    //Search projects in solution for named PLC. THen assigns PROJECT object
         {
@@ -450,8 +475,6 @@ namespace tcSlnFormBuilder
             ITcSmTreeItem gvlPouItem = systemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^GVLs").Child[1];
 
             ITcPlcDeclaration gvlPouDec = (ITcPlcDeclaration)gvlPouItem;
-            //ITcPlcFiles gvlPou = (ITcPlcFiles)gvlPouItem;
-            //ITcPlcDeclaration gvlPouDec = (ITcPlcDeclaration)gvlPou;
             gvlPouDec.DeclarationText = "{attribute 'qualified_only'}"+Environment.NewLine+"VAR_GLOBAL"+Environment.NewLine+Environment.NewLine+"END_VAR"+Environment.NewLine+Environment.NewLine+"VAR_GLOBAL CONSTANT"+Environment.NewLine+ "    nAXIS_NUM : UINT:=2;" + Environment.NewLine+"END_VAR";
 
             System.Threading.Thread.Sleep(1000);

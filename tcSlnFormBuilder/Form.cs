@@ -30,7 +30,7 @@ namespace tcSlnFormBuilder
 
         private void butCreateSolution_Click(object sender, EventArgs e)
         {
-            mySln.create();
+            mySln.createTcProj(mySln.SlnPath, mySln.SlnName);
         }
 
         private void labelDirSelected_Click(object sender, EventArgs e)
@@ -180,7 +180,7 @@ namespace tcSlnFormBuilder
 
         private void butOpenDTE_MouseClick(object sender, MouseEventArgs e)
         {
-                mySln.CreateDTE(toolStripComboBox1.Text, true, false, true);
+                mySln.setupDTE(toolStripComboBox1.Text, true, false, true);
 
            
         }
