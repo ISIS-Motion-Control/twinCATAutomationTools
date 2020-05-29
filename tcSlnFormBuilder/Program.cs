@@ -17,9 +17,13 @@ namespace tcSlnFormBuilder
         static void Main()
         {
             Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
-            tcSln myTcSln = new tcSln(@"C:\Users\bem74844\tcSln\SolutionFolder", "myTwinCATSln");
+            //tcSln myTcSln = new tcSln(@"C:\Users\bem74844\tcSln\SolutionFolder", "myTwinCATSln");
+            tcSln myTcSln = new tcSln();
+            myTcSln.SlnPath = @"C:\Users\bem74844\tcSln\SolutionFolder";
+            myTcSln.SlnName = "myTwinCATSln";
             myTcSln.SlnBasePath = (@"C:\Users\bem74844\Desktop\gitCloneTest\bin\tc_generic_structure\solution");
-            XmlTools myXmlTools = new XmlTools();
+            myTcSln.xmlFolderPath = (@"C:\Users\SCooper - work\Documents\Git Repos\TEST CRATE HARDWARE\");
+            //XmlTools myXmlTools = new XmlTools();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

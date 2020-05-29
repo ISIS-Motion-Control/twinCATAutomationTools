@@ -19,3 +19,7 @@ C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\twinCATAutomationToo
 C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\twinCATAutomationTools\tcSlnFormBuilder\obj\Debug\tcSlnFormBuilder.csproj.CoreCompileInputs.cache
 C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\twinCATAutomationTools\tcSlnFormBuilder\obj\Debug\tcSlnFormBuilder.exe
 C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\twinCATAutomationTools\tcSlnFormBuilder\obj\Debug\tcSlnFormBuilder.pdb
+C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\twinCATAutomationTools\tcSlnFormBuilder\bin\Debug\tcSlnFormBuilder.exe.manifest
+C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\twinCATAutomationTools\tcSlnFormBuilder\bin\Debug\tcSlnFormBuilder.application
+C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\twinCATAutomationTools\tcSlnFormBuilder\obj\Debug\tcSlnFormBuilder.exe.manifest
+C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\twinCATAutomationTools\tcSlnFormBuilder\obj\Debug\tcSlnFormBuilder.application

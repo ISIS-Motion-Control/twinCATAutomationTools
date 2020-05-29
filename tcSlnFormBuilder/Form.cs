@@ -19,170 +19,112 @@ namespace tcSlnFormBuilder
         {
             InitializeComponent();
             this.mySln = mySln;
-            labelDirSelected.Text = mySln.SlnPath;
-            textSlnName.Text = mySln.SlnName;
-            labelBaseDir.Text = mySln.SlnBasePath;
-            xmlSaveDirectory.Text = mySln.xmlTools.xmlPath;
-            xmlName.Text = mySln.xmlTools.xmlName;
-            solutionFileSelect.Text = mySln.completeSolutionPath;
-            xmlFileSelectHW.Text = mySln.xmlHwMapPath;
+            solutionFileSelect.Text = mySln.solutionPath;
         }
 
-        private void butCreateSolution_Click(object sender, EventArgs e)
-        {
-            mySln.createTcProj(mySln.SlnPath, mySln.SlnName);
-        }
 
-        private void labelDirSelected_Click(object sender, EventArgs e)
-        {
-            folderBrowseDir.SelectedPath = labelDirSelected.Text;
-            folderBrowseDir.ShowDialog();
-            labelDirSelected.Text = folderBrowseDir.SelectedPath;
-            mySln.SlnPath = labelDirSelected.Text;
-        }
 
-        private void textSlnName_TextChanged(object sender, EventArgs e)
-        {
-            mySln.SlnName = textSlnName.Text;
-        }
-
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void labelBaseDir_Click(object sender, EventArgs e)
-        {
-            folderBrowserBaseDir.SelectedPath = labelBaseDir.Text;
-            folderBrowserBaseDir.ShowDialog();
-            labelBaseDir.Text = folderBrowserBaseDir.SelectedPath;
-            mySln.SlnBasePath = labelBaseDir.Text;
-        }
-
-        private void buttonAddBasePrj_Click(object sender, EventArgs e)
-        {
-            mySln.addBaseSln(labelBaseDir.Text);
-        }
-
-        private void buttonCloneRepo_Click(object sender, EventArgs e)
-        {
-            mySln.gitBash();
-
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            mySln.xmlTools.produceXmlMap(mySln.Project.Object);
-        }
-
-        private void buttonGetSln_Click(object sender, EventArgs e)
-        {
-            mySln.openSolution();
-        }
-
-        private void getPrj_Click(object sender, EventArgs e)
-        {
-            mySln.findPLCProject();
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-            mySln.PlcName = textBox1.Text;
-        }
-
-        private void butConsumeMap_Click(object sender, EventArgs e)
-        {
-            mySln.xmlTools.clearXmlMap(mySln.Project.Object);
-            mySln.xmlTools.consumeXmlMap(mySln.Project.Object, xmlFileSelect.Text);
-        }
-
-        private void xmlFileSelect_Click(object sender, EventArgs e)
-        {
-            openFileDialog1.ShowDialog();
-            xmlFileSelect.Text = openFileDialog1.FileName;
-        }
-
-        private void xmlSaveDirectory_Click(object sender, EventArgs e)
-        {
-            xmlDirBrowser.SelectedPath = xmlSaveDirectory.Text;
-            xmlDirBrowser.ShowDialog();
-            xmlSaveDirectory.Text = xmlDirBrowser.SelectedPath;
-            mySln.xmlTools.xmlPath = xmlSaveDirectory.Text;
-        }
-
-        private void xmlName_TextChanged(object sender, EventArgs e)
-        {
-            mySln.xmlTools.xmlName = xmlName.Text;
-        }
-
-        private void butNcCreate_Click(object sender, EventArgs e)
-        {
-            //mySln.createNC();
-            mySln.ncTools.createNcTask(mySln.Project.Object);
-        }
-
-        private void butCreateAxis_Click(object sender, EventArgs e)
-        {
-            mySln.ncTools.addNcAxis(mySln.Project.Object);
-        }
-
-        private void butDeleteNC_Click(object sender, EventArgs e)
-        {
-            mySln.ncTools.removeNcTask(mySln.Project.Object);
-        }
-
-        private void butGrabProject_Click(object sender, EventArgs e)
-        {
-            mySln.grabFirstProject();
-        }
-
-        private void solutonFileSelect_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
+        //Solution file selection box
         private void solutionFileSelect_Click(object sender, EventArgs e)
         {
             openSolutionSelect.ShowDialog();
             solutionFileSelect.Text = openSolutionSelect.FileName;
-            mySln.completeSolutionPath = openSolutionSelect.FileName;
+            mySln.solutionPath = openSolutionSelect.FileName;
         }
 
-        private void xmlFileSelectHW_MouseClick(object sender, MouseEventArgs e)
+        //Config folder selection box
+        private void configFolderSelect_Click(object sender, EventArgs e)
         {
-            openSolutionSelect.ShowDialog();
-            xmlFileSelectHW.Text = openSolutionSelect.FileName;
-            
+            folderBrowserDialog2.ShowDialog();
+            configFolderSelect.Text = folderBrowserDialog2.SelectedPath;
+            mySln.xmlFolderPath = folderBrowserDialog2.SelectedPath;
+            mySln.ConfigFolder = configFolderSelect.Text;
         }
 
-        private void butAddHardware_Click(object sender, EventArgs e)
+        //Open selected solution file
+        private void buttonOpenSolution_Click(object sender, EventArgs e)
+        {
+            mySln.openSolution();
+        }
+
+        //Create new solution
+        private void buttonCreateSolution_Click(object sender, EventArgs e)
+        {
+            mySln.createTcProj(mySln.SlnPath, mySln.SlnName);
+        }
+
+        //Load in Project object from first available project
+        private void buttonGrabProject_Click(object sender, EventArgs e)
+        {
+            mySln.grabSolutionProject();
+        }
+
+        //Produce project mappings
+        private void buttonProduceMappings_Click(object sender, EventArgs e)
+        {
+            mySln.exportXmlMap();
+        }
+
+        //Consuming mappings file - <BROKEN>
+        private void buttonConsumeMappings_Click(object sender, EventArgs e)
+        {
+            mySln.clearMap();
+            mySln.importXmlMap();
+        }
+
+        //Clear project mappings - <NOT IMPLEMENTED>
+        private void buttonClearMappings_Click(object sender, EventArgs e)
+        {
+            mySln.clearMap();
+        }
+
+        //Create NC Task
+        private void buttonCreateNcTask_Click(object sender, EventArgs e)
+        {
+            mySln.createNcTask();
+        }
+
+        //Create NC Axis
+        private void buttonCreateAxis_Click(object sender, EventArgs e)
+        {
+            mySln.addNcAxis();
+        }
+
+        //Delete NC Task
+        private void buttonDeleteNcTask_Click(object sender, EventArgs e)
+        {
+            mySln.removeNcTask();
+        }
+
+        //Add Test Crate Hardware to selected solution
+        private void buttonAddHardware_Click(object sender, EventArgs e)
         {
             mySln.setupTestCrate();
         }
 
-        private void xmlFolderSelect_Click(object sender, EventArgs e)
+        //Export Device 1 hardware tree to XTI
+        private void buttonExportDevice1_Click(object sender, EventArgs e)
         {
-            folderBrowserDialog2.ShowDialog();
-            xmlFolderSelect.Text = folderBrowserDialog2.SelectedPath;
-            mySln.xmlFolderPath = folderBrowserDialog2.SelectedPath;
-
+            mySln.exportHardwareXTI(1);
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        //Import Device 1 hardware tree to solution
+        private void buttonImportDevice1_Click(object sender, EventArgs e)
         {
-            mySln.exportHW();
+            mySln.importHardwareXTI();
         }
 
-        private void toolStripProgressBar1_Click(object sender, EventArgs e)
+        //Use config folder in solution directory
+        private void buttonCopySolutionDir_Click(object sender, EventArgs e)
         {
-
+            configFolderSelect.Text = mySln.solutionFolder + @"\Config";
+            mySln.ConfigFolder = configFolderSelect.Text;
         }
 
-        private void butOpenDTE_MouseClick(object sender, MouseEventArgs e)
+        //Text change on configuration folder
+        private void configFolderSelect_TextChanged(object sender, EventArgs e)
         {
-                mySln.setupDTE(toolStripComboBox1.Text, true, false, true);
-
-           
+            mySln.ConfigFolder = configFolderSelect.Text;
         }
     }
 }

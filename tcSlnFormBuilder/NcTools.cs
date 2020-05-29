@@ -10,66 +10,77 @@ using System.Windows.Forms;
 
 namespace tcSlnFormBuilder
 {
-    public class NcTools
+    public partial class tcSln 
     {
-        public XmlDocument xmlDoc;
-        public String ncXmlPath = @"C:\Users\bem74844\tcSln\sln3\myTwinCATSln";
-        public String ncXmlName = "xmlMap";
+        private ITcSmTreeItem _ncConfig;
+        private ITcSmTreeItem _axes;
 
-        public Boolean createNcTask(ITcSysManager13 systemManager)
+        public ITcSmTreeItem NcConfig
         {
-            try
-            {
-                ITcSmTreeItem ncConfig = systemManager.LookupTreeItem("TINC");
-                ncConfig.CreateChild("NC-Task 1", 1);
-                return true;
-            }
-            catch
-            {
-                return false ;
-            }
-        }
-        public Boolean addNcAxis(ITcSysManager13 systemManager)
+            get { return _ncConfig ?? (_ncConfig = SystemManager.LookupTreeItem("TINC")); }
+            set { _ncConfig = value; }
+        }       
+        public ITcSmTreeItem Axes
         {
-            try
-            {
-                ITcSmTreeItem axes = systemManager.LookupTreeItem("TINC").Child[1].LookupChild("Axes");
-                //MessageBox.Show((axes.ChildCount).ToString());
-                axes.CreateChild("Axis " + (axes.ChildCount + 1).ToString(), 1);
-                //MessageBox.Show("That somehow worked");
-                return true;
-            }
-            catch
-            {
-                //MessageBox.Show("Not a chance sonny");
-                return false;
-            }
-            
+            get { return _axes ?? (_axes = NcConfig.Child[1].LookupChild("Axes")); }
+            set { _axes = value; }
         }
 
-        public bool removeNcTask(ITcSysManager13 systemManager) //NOT IMPLEMENTED
+        /// <summary>
+        /// Create NC Task in solution
+        /// </summary>
+        /// <returns></returns>
+        public Boolean createNcTask()
         {
             try
             {
-                ITcSmTreeItem ncConfig = systemManager.LookupTreeItem("TINC");
-                ncConfig.DeleteChild(ncConfig.Child[1].Name);
-                MessageBox.Show("Success");
+                NcConfig.CreateChild("NC-Task 1", 1);
+                return true;
+            }
+            catch { return false; }
+        }
+        
+        /// <summary>
+        /// Add single standard stepper axis to NC Task
+        /// </summary>
+        /// <returns></returns>
+        public Boolean addNcAxis()
+        {
+            try
+            {
+                Axes.CreateChild("Axis " + (Axes.ChildCount + 1).ToString(), 1);
+                return true;
+            }
+            catch { return false; }            
+        }
+       
+        /// <summary>
+        /// Remove NC Task and all axes from solution
+        /// </summary>
+        /// <returns></returns>
+        public Boolean removeNcTask() 
+        {
+            try
+            {
+                NcConfig.DeleteChild(NcConfig.Child[1].Name);
+                NcConfig = null;
+                Axes = null;
                 return true;
             }
             catch { return false; }
         }
 
-        public bool removeAxis() //NOT IMPLEMENTED
-        {
-            return false;
-        }
-
-        public Boolean ncAxisConsumeMap(ITcSmTreeItem axis, String xmlDoc)
+        /// <summary>
+        /// Set NC axis parameters
+        /// </summary>
+        /// <param name="xmlString"></param>
+        /// <returns></returns>
+        public Boolean ncAxisConsumeMap(int axisNum, String xmlString)
         {
             try
             {
-                //MessageBox.Show(xmlDoc.OuterXml);
-                axis.ConsumeXml(xmlDoc);
+                axis = Axes.LookupChild("Axis " + axisNum);
+                axis.ConsumeXml(xmlString);
                 return true;
             }
             catch
@@ -77,9 +88,5 @@ namespace tcSlnFormBuilder
                 return false;
             }
         }
-
-
-
-
     }
 }

@@ -8,43 +8,49 @@ using System.Windows.Forms;
 using TCatSysManagerLib;
 using System.Diagnostics;
 using EnvDTE;
+using System.IO;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace tcSlnFormBuilder
 {
-    public class tcSln
+    public partial class tcSln
     {
-        private String slnPath = " ";
-        private String slnName = " ";
-        private String slnBasePath = " ";
+
+        //FIELDS
+        private String _slnPath;    //Dir for new solution
+        private String _slnName;    //Name for new solution
+        private String slnBasePath;
         private String plcName;
-        private Project project;
+        private Project _project;
         private Solution solution;
-        private ITcSysManager13 systemManager;
-        public XmlDocument xmlDoc;
+        private ITcSysManager13 _systemManager;
+        public XmlDocument xmlDoc;  //Generic holder for xmlDocument
         public String xmlPath;
         public XmlTools xmlTools= new XmlTools();
-        public NcTools ncTools = new NcTools();
-        public String completeSolutionPath = " ";
+        
+        public String solutionPath = " ";
+        public String solutionFolder = " ";
+        public String _configFolder = " "; //Used for all XTIs and XML. Should create folder if doesn't exist
+
         public String xmlHwMapPath = " ";
         public String xmlFolderPath = " ";
         public ITcSmTreeItem axis;
         public VSVersion version = VSVersion.TWINCAT_SHELL;
 
-
-        public tcSln(String slnPath, String slnName)
+        public tcSln()
         {
-            this.slnPath = slnPath;
-            this.slnName = slnName;
+
         }
+        //FIELD METHODS
         public String SlnPath
         {
-            get { return slnPath; }
-            set { slnPath = value; }
+            get { return _slnPath; }
+            set { _slnPath = value; }
         }
         public String SlnName
         {
-            get { return slnName; }
-            set { slnName = value; }
+            get { return _slnName; }
+            set { _slnName = value; }
         }
         public String SlnBasePath
         {
@@ -58,11 +64,25 @@ namespace tcSlnFormBuilder
         }
         public Project Project
         {
-            get { return project; }
-            set { project = value; }
+            get { return _project ?? (_project = grabSolutionProject()); }
+            set { _project = value; }
+        }
+        public ITcSysManager13 SystemManager
+        {
+            get { return _systemManager ?? (_systemManager = Project.Object); }
+            set { _systemManager = value; }
+        }
+        public String ConfigFolder
+        {
+            get { return _configFolder ?? (_configFolder = solutionFolder + @"\Config"); }
+            set 
+            { 
+                _configFolder = value;
+                Directory.CreateDirectory(_configFolder);
+            }
         }
 
-
+        //METHODS
         /// <summary>
         /// Quick setup method for opening TWINCAT_XAE
         /// Contains default parameters for visibility
@@ -126,7 +146,7 @@ namespace tcSlnFormBuilder
             solution.Create(slnPath, slnName);
             try
             {
-                saveAs(solution, slnPath, slnName);
+                saveAs(slnPath, slnName);
             }
             catch
             {
@@ -137,7 +157,7 @@ namespace tcSlnFormBuilder
             string template = @"C:\TwinCAT\3.1\Components\Base\PrjTemplate\TwinCAT Project.tsproj"; //Default
             try
             {
-                project = solution.AddFromTemplate(template, slnPath + @"\" + slnName, slnName, false);
+                Project = solution.AddFromTemplate(template, slnPath + @"\" + slnName, slnName, false);
             }
             catch
             {
@@ -153,7 +173,7 @@ namespace tcSlnFormBuilder
                         }
                         try
                         {
-                            project = solution.AddFromTemplate(template, slnPath + @"\" + slnName, slnName, false);
+                            Project = solution.AddFromTemplate(template, slnPath + @"\" + slnName, slnName, false);
                         }
                         catch
                         {
@@ -162,76 +182,86 @@ namespace tcSlnFormBuilder
                     }
                 }
             }
-            systemManager = project.Object;
-            project.Save();
-            saveAs(solution, slnPath, slnName);
+            Project.Save();
+            saveAs(slnPath, slnName);
         }
 
-
-
+        /// <summary>
+        /// Opens a given TwinCAT solution file
+        /// </summary>
+        /// <param name="solutionFilePath"></param>
+        /// <returns></returns>
         public Solution openSolution()    //Open existing TwinCAT solution
         {
-            solution = quickSetupDTE();
-            solution.Open(slnPath + @"\" + slnName + @".sln");
-            return solution;
+            try
+            {
+                solution = quickSetupDTE();
+                solution.Open(solutionPath);
+                solutionFolder = new FileInfo(solutionPath).Directory.FullName;
+                return solution;
+                
+            }
+            catch
+            {
+                throw new ApplicationException($"Unable to open '{solutionPath}'");
+            }
         }
-        public Solution openSolution2(String solutionFilePath)    //Open existing TwinCAT solution
-        {
-            solution = quickSetupDTE();
-            solution.Open(solutionFilePath);
-            return solution;
-        }
-
-
 
         public void createPLC() //NOT IMPLEMENTED
         {
             throw new NotImplementedException();
         }
+        
+        
         public void findPLCProject()    //Search projects in solution for named PLC. THen assigns PROJECT object
         {
             PlcBuilder plcbuilder = new PlcBuilder(solution, plcName);
             try
             {
-                project = plcbuilder.findPlcProject();
-                systemManager = project.Object;
+                Project = plcbuilder.findPlcProject();
             }
             catch
             {
-                MessageBox.Show("Unable to load in project object");
+                throw new ApplicationException($"Unable to find '{plcName}' object");    
             }
-        }
-        public void grabFirstProject()
-        {
-            try
-            {
-                project = solution.Projects.Item(1);
-            }
-            catch
-            {
-                MessageBox.Show("No solution loaded or no projects in solution");
-            }
-            
         }
 
-        public Boolean grabSolutionProject()
+        /// <summary>
+        /// Using the loaded solution, load in the project object using the first availabe project in the solution
+        /// </summary>
+        public Project grabSolutionProject(int itemNum = 1)
         {
             try
             {
-                project = solution.Projects.Item(1);
+                Project = solution.Projects.Item(itemNum);
+                return Project;
+            }
+            catch
+            {
+                return null;
+            }         
+        }
+
+        /// <summary>
+        /// Save the current solution within a given directory and with a given name
+        /// </summary>
+        /// <param name="slnPath"></param>
+        /// <param name="slnName"></param>
+        /// <returns></returns>
+        public Boolean saveAs(String slnPath, String slnName)
+        {
+            try     
+            { 
+                solution.SaveAs(slnPath + @"\" + slnName + @"\" + slnName + ".sln");
                 return true;
             }
-            catch
+            catch   
             {
-                return false;
+                return false; 
             }
         }
 
-        public void saveAs(Solution solution, String slnPath, String slnName)
-        {
-            try     { solution.SaveAs(slnPath + @"\" + slnName + @"\" + slnName + ".sln"); }
-            catch   { MessageBox.Show("Unable to save solution"); }
-        }   //Save the current solution
+        //<Not used>
         public void gitBash()
         {
             //Launches a shell script to checks if base code repo is present, clones if not, then switches to master
@@ -247,10 +277,11 @@ namespace tcSlnFormBuilder
             process.BeginOutputReadLine();
             //process.WaitForExit();
         }
-        public void addBaseSln(String slnBasePath)
+        //<Not used>
+        public void addBaseSln(String slnBasePath) //For adding collab code automatically - requires better gitbash
         {
             string template = slnBasePath+ @"\tc_project_app\tc_project_app.plcproj"; //path toproject template
-            ITcSmTreeItem plc = systemManager.LookupTreeItem("TIPC");        
+            ITcSmTreeItem plc = SystemManager.LookupTreeItem("TIPC");        
             try
             {
                 ITcSmTreeItem newProject = plc.CreateChild("basePLC", 0, "", template);
@@ -259,53 +290,65 @@ namespace tcSlnFormBuilder
             {
                 MessageBox.Show("Nope"); //Change the template so it detects version installed and knows where to look
             }
-        }   //Add the bitbucket base plc solution
-        public void createNC()
+        }
+
+        
+        public void exportHW()  //This is not really doing what I want it to at the moment. I need to look at using the import and export XTI option
+        {   //Export XTI apparently does everything under it too
+            ITcSmTreeItem etherCatMaster = SystemManager.LookupTreeItem("TIID^Device 1 (EtherCAT)");
+            xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml(etherCatMaster.ProduceXml());
+            xmlFolderPath = solutionFolder;
+            xmlDoc.Save(xmlFolderPath + "hwScan.xml");
+            MessageBox.Show("Success");           
+        }
+
+        /// <summary>
+        /// Export xti file for a given device number under the IO
+        /// </summary>
+        /// <param name="deviceNumber"></param>       
+        public void exportHardwareXTI(int deviceNumber)
         {
+            //This keeps link information which I do not want. Would be ideal to strip link information first
             try
             {
-                systemManager = project.Object;
-                ITcSmTreeItem ncConfig = systemManager.LookupTreeItem("TINC");
-                ncConfig.CreateChild("NC-Task", 1);
-                MessageBox.Show("Task created");
-                try
-                {
-                    ITcSmTreeItem axes = systemManager.LookupTreeItem("TINC^NC-Task SAF^Axes");
-                    axes.CreateChild("Axis 1", 1);
-                    MessageBox.Show("Axis created");
-                }
-                catch
-                {
-                    MessageBox.Show("Failed to create Axis", "Oopsie");
-                    return;
-                }
+                ITcSmTreeItem io = SystemManager.LookupTreeItem("TIID");
+                ITcSmTreeItem deviceName = io.Child[deviceNumber];
+                io.ExportChild(deviceName.Name, solutionFolder + @"\" + deviceName.Name + @".xti");
             }
             catch
             {
-                MessageBox.Show("Failed to create NC", "OH DEAR");
-                return;
+                throw new ApplicationException($"Unable to export hardware");
             }
-            
-            
         }
 
-        public void exportHW()
+        /// <summary>
+        /// Export xti file for first device
+        /// </summary>
+        public void exportDevice1XTI()
         {
-            ITcSmTreeItem etherCatMaster = systemManager.LookupTreeItem("TIID^Device 1 (EtherCAT)");
-            xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(etherCatMaster.ProduceXml());
-            xmlFolderPath = @"C:\Users\SCooper - work\Documents\Git Repos\TEST CRATE HARDWARE";
-            xmlDoc.Save(xmlFolderPath + "hwScan.xml");
-            MessageBox.Show("Success");
-            
+            exportHardwareXTI(1);
+        }
+
+        public void importHardwareXTI(string xtiFile = @"C:\Users\SCooper - work\Documents\Git Repos\TEST CRATE HARDWARE\ Device 1 (EtherCAT).xti")
+        {
+            try
+            {
+                ITcSmTreeItem io = SystemManager.LookupTreeItem("TIID");
+                io.ImportChild(xtiFile);
+            }
+            catch
+            {
+                throw new ApplicationException($"Unable to import hardware");
+            }
         }
 
         public void setupTestCrate()
         {
-            openSolution2(completeSolutionPath);
+            openSolution();
             for (int i = 0; i < 20; i++)
             {
-                if (grabSolutionProject())
+                if (grabSolutionProject()!=null)
                 {
                     break;
                 }
@@ -314,7 +357,7 @@ namespace tcSlnFormBuilder
                     System.Threading.Thread.Sleep(500);
                 }
             }
-            if (project == null)
+            if (Project == null)
             {
                 MessageBox.Show("Failed to load in project");
                 MessageFilter.Revoke();
@@ -331,19 +374,19 @@ namespace tcSlnFormBuilder
 
             //Solution loaded and project loaded
             //Next task: add NC and parameterise 
-            systemManager = (ITcSysManager13) project.Object;
+            //SystemManager = (ITcSysManager13) project.Object;
             //Create NC Task
             try
             {
                 //Look for existing NC Task
-                systemManager.LookupTreeItem("TINC").Child[1].LookupChild("Axes");
+                SystemManager.LookupTreeItem("TINC").Child[1].LookupChild("Axes");
             }
             catch
             {
                 //Add NC Task
                 for (int i = 0; i < 20; i++)
                 {
-                    if (ncTools.createNcTask(systemManager))
+                    if (createNcTask())
                     {
                         break;
                     }
@@ -364,7 +407,7 @@ namespace tcSlnFormBuilder
             //Add NC Axes (2 of them)
             for (int i = 0; i < 10; i++)
             {
-                if (ncTools.addNcAxis(project.Object))
+                if (addNcAxis())
                 {
                     break;
                 }
@@ -382,7 +425,7 @@ namespace tcSlnFormBuilder
             System.Threading.Thread.Sleep(500);
             for (int i = 0; i < 10; i++)
             {
-                if (ncTools.addNcAxis(project.Object))
+                if (addNcAxis())
                 {
                     break;
                 }
@@ -404,12 +447,12 @@ namespace tcSlnFormBuilder
             xmlDoc = new XmlDocument();
             
             System.Threading.Thread.Sleep(1000);
-            ITcSmTreeItem devices = systemManager.LookupTreeItem("TIID");
+            ITcSmTreeItem devices = SystemManager.LookupTreeItem("TIID");
             devices.CreateChild("Device 1 (EtherCAT)", 111, null, null);
 
-            ITcSmTreeItem etherCatMaster = systemManager.LookupTreeItem("TIID^Device 1 (EtherCAT)");
+            ITcSmTreeItem etherCatMaster = SystemManager.LookupTreeItem("TIID^Device 1 (EtherCAT)");
             etherCatMaster.CreateChild("Term 1 (EK1200)", 9099, "", "EK1200-5000");
-            ITcSmTreeItem ek1200 = systemManager.LookupTreeItem("TIID^Device 1 (EtherCAT)^Term 1 (EK1200)");
+            ITcSmTreeItem ek1200 = SystemManager.LookupTreeItem("TIID^Device 1 (EtherCAT)^Term 1 (EK1200)");
             ek1200.CreateChild("Term 2 (EL1808)", 9099, "", "EL1808");
             ek1200.CreateChild("Term 3 (EL2819)", 9099, "", "EL2819");
             ek1200.CreateChild("Term 4 (EL5002)", 9099, "", "EL5002");
@@ -421,10 +464,10 @@ namespace tcSlnFormBuilder
             xmlFolderPath = @"C:\Users\SCooper - work\Documents\Git Repos\TEST CRATE HARDWARE";
             xmlPath = xmlFolderPath + @"\el7041Term6.xml";
             xmlDoc.Load(xmlPath);
-            systemManager.LookupTreeItem("TIID^Device 1 (EtherCAT)^Term 1 (EK1200)^Term 6 (EL7041-0052)").ConsumeXml(xmlDoc.OuterXml);
+            SystemManager.LookupTreeItem("TIID^Device 1 (EtherCAT)^Term 1 (EK1200)^Term 6 (EL7041-0052)").ConsumeXml(xmlDoc.OuterXml);
             xmlPath = xmlFolderPath + @"\el7041Term7.xml";
             xmlDoc.Load(xmlPath);
-            systemManager.LookupTreeItem("TIID^Device 1 (EtherCAT)^Term 1 (EK1200)^Term 7 (EL7041-0052)").ConsumeXml(xmlDoc.OuterXml);
+            SystemManager.LookupTreeItem("TIID^Device 1 (EtherCAT)^Term 1 (EK1200)^Term 7 (EL7041-0052)").ConsumeXml(xmlDoc.OuterXml);
 
             
             xmlPath = xmlFolderPath + @"\ioConfig.xml";
@@ -441,8 +484,8 @@ namespace tcSlnFormBuilder
             try
             {
 
-                axis = systemManager.LookupTreeItem("TINC^NC-Task 1 SAF^Axes^Axis 1");
-                ncTools.ncAxisConsumeMap(axis, xmlDoc.OuterXml);
+                //axis = SystemManager.LookupTreeItem("TINC^NC-Task 1 SAF^Axes^Axis 1");
+                ncAxisConsumeMap(1,xmlDoc.OuterXml);
             }
             catch
             {
@@ -453,8 +496,8 @@ namespace tcSlnFormBuilder
             try
             {
 
-                axis = systemManager.LookupTreeItem("TINC^NC-Task 1 SAF^Axes^Axis 2");
-                ncTools.ncAxisConsumeMap(axis, xmlDoc.OuterXml);
+                //axis = SystemManager.LookupTreeItem("TINC^NC-Task 1 SAF^Axes^Axis 2");
+                ncAxisConsumeMap(2,xmlDoc.OuterXml);
             }
             catch
             {
@@ -463,7 +506,7 @@ namespace tcSlnFormBuilder
 
             System.Threading.Thread.Sleep(1000);
             //Add PLC stuff
-            ITcSmTreeItem plcPou = systemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^POUs^MAIN");
+            ITcSmTreeItem plcPou = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^POUs^MAIN");
             ITcPlcPou mainPou = (ITcPlcPou)plcPou;
             ITcPlcDeclaration mainPouDec = (ITcPlcDeclaration)plcPou;
             String declarationText = mainPouDec.DeclarationText;
@@ -472,7 +515,7 @@ namespace tcSlnFormBuilder
 
             //ITcSmTreeItem gvlPouItem = systemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^GVLs^GVL_APP");
             System.Threading.Thread.Sleep(500);
-            ITcSmTreeItem gvlPouItem = systemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^GVLs").Child[1];
+            ITcSmTreeItem gvlPouItem = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^GVLs").Child[1];
 
             ITcPlcDeclaration gvlPouDec = (ITcPlcDeclaration)gvlPouItem;
             gvlPouDec.DeclarationText = "{attribute 'qualified_only'}"+Environment.NewLine+"VAR_GLOBAL"+Environment.NewLine+Environment.NewLine+"END_VAR"+Environment.NewLine+Environment.NewLine+"VAR_GLOBAL CONSTANT"+Environment.NewLine+ "    nAXIS_NUM : UINT:=2;" + Environment.NewLine+"END_VAR";
@@ -488,11 +531,16 @@ namespace tcSlnFormBuilder
             //ACtivate wasn't working, think I need to create the config first! There's a command to do this i think
             xmlPath = xmlFolderPath + @"\xmlMapMCU_HW.xml";
             xmlDoc.Load(xmlPath);
-            systemManager.ConsumeMappingInfo(xmlDoc.OuterXml);
-            systemManager.ActivateConfiguration();
+            SystemManager.ConsumeMappingInfo(xmlDoc.OuterXml);
+            SystemManager.ActivateConfiguration();
             MessageFilter.Revoke();
             MessageBox.Show("Success!");
         }
+
+
+
+        /////////DEVELOPING NEW METHODS HERE
+        
     }
 }
 
