@@ -246,7 +246,7 @@
             this.buttonExportDevice1.Name = "buttonExportDevice1";
             this.buttonExportDevice1.Size = new System.Drawing.Size(499, 46);
             this.buttonExportDevice1.TabIndex = 39;
-            this.buttonExportDevice1.Text = "Export Device1";
+            this.buttonExportDevice1.Text = "Export IO File";
             this.buttonExportDevice1.UseVisualStyleBackColor = true;
             this.buttonExportDevice1.Click += new System.EventHandler(this.buttonExportDevice1_Click);
             // 
@@ -257,7 +257,7 @@
             this.buttonImportDevice1.Name = "buttonImportDevice1";
             this.buttonImportDevice1.Size = new System.Drawing.Size(499, 46);
             this.buttonImportDevice1.TabIndex = 40;
-            this.buttonImportDevice1.Text = "Import Device1";
+            this.buttonImportDevice1.Text = "Import IO File";
             this.buttonImportDevice1.UseVisualStyleBackColor = true;
             this.buttonImportDevice1.Click += new System.EventHandler(this.buttonImportDevice1_Click);
             // 

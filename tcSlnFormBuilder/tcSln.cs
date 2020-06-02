@@ -303,32 +303,9 @@ namespace tcSlnFormBuilder
             MessageBox.Show("Success");           
         }
 
-        /// <summary>
-        /// Export xti file for a given device number under the IO
-        /// </summary>
-        /// <param name="deviceNumber"></param>       
-        public void exportHardwareXTI(int deviceNumber)
-        {
-            //This keeps link information which I do not want. Would be ideal to strip link information first
-            try
-            {
-                ITcSmTreeItem io = SystemManager.LookupTreeItem("TIID");
-                ITcSmTreeItem deviceName = io.Child[deviceNumber];
-                io.ExportChild(deviceName.Name, solutionFolder + @"\" + deviceName.Name + @".xti");
-            }
-            catch
-            {
-                throw new ApplicationException($"Unable to export hardware");
-            }
-        }
+ 
 
-        /// <summary>
-        /// Export xti file for first device
-        /// </summary>
-        public void exportDevice1XTI()
-        {
-            exportHardwareXTI(1);
-        }
+
 
         public void importHardwareXTI(string xtiFile = @"C:\Users\SCooper - work\Documents\Git Repos\TEST CRATE HARDWARE\ Device 1 (EtherCAT).xti")
         {

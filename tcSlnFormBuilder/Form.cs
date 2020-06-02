@@ -111,7 +111,8 @@ namespace tcSlnFormBuilder
         //Import Device 1 hardware tree to solution
         private void buttonImportDevice1_Click(object sender, EventArgs e)
         {
-            mySln.importHardwareXTI();
+            //mySln.importHardwareXTI();
+            mySln.importIoXti();
         }
 
         //Use config folder in solution directory
