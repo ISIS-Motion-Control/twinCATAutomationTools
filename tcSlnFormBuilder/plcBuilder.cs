@@ -29,14 +29,10 @@ namespace tcSlnFormBuilder
                 try
                 {
                     ITcSysManager13 twinCatProject = (ITcSysManager13)project.Object;
-                    //ITcSmTreeItem plcProjectRootItem = twinCatProject.LookupTreeItem("TIPC^Untitled2");
                     ITcSmTreeItem plcProjectRootItem = twinCatProject.LookupTreeItem("TIPC^" + plcName);
-                    //MessageBox.Show(plcProjectRootItem.PathName);
-                    //ITcPlcProject iecProjectRoot = (ITcPlcProject)plcProjectRootItem.Child[1]; //Looking at first PLC project
                     ITcPlcProject iecProjectRoot = (ITcPlcProject)plcProjectRootItem;
                     iecProjectRoot.BootProjectAutostart = true;
                     iecProjectRoot.GenerateBootProject(true);
-                    MessageBox.Show("Found PLC Project: " + project.Name + "." + plcProjectRootItem.Name);
                     return project;
                 }
                 catch
