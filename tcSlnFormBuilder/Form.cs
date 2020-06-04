@@ -127,5 +127,21 @@ namespace tcSlnFormBuilder
         {
             mySln.ConfigFolder = configFolderSelect.Text;
         }
+
+        private void buttonImportDeviceList_Click(object sender, EventArgs e)
+        {
+            mySln.importIoList();
+        }
+
+        private void buttonImportIoXmls_Click(object sender, EventArgs e)
+        {
+            //mySln.importIoXmls(@"C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\Config Folder\deviceXmls\Device 1 (EtherCAT).xml");
+            mySln.importAllIoXmls();
+        }
+
+        private void buttonImportNcXmls_Click(object sender, EventArgs e)
+        {
+            mySln.ncConsumeAllMaps();
+        }
     }
 }

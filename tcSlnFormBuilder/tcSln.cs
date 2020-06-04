@@ -10,6 +10,7 @@ using System.Diagnostics;
 using EnvDTE;
 using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Microsoft.VisualBasic;
 
 namespace tcSlnFormBuilder
 {
@@ -26,7 +27,6 @@ namespace tcSlnFormBuilder
         private ITcSysManager13 _systemManager;
         public XmlDocument xmlDoc;  //Generic holder for xmlDocument
         public String xmlPath;
-        public XmlTools xmlTools= new XmlTools();
         
         public String solutionPath = " ";
         public String solutionFolder = " ";
@@ -34,7 +34,7 @@ namespace tcSlnFormBuilder
 
         public String xmlHwMapPath = " ";
         public String xmlFolderPath = " ";
-        public ITcSmTreeItem axis;
+        
         public VSVersion version = VSVersion.TWINCAT_SHELL;
 
         public tcSln()
@@ -323,17 +323,8 @@ namespace tcSlnFormBuilder
         public void setupTestCrate()
         {
             openSolution();
-            for (int i = 0; i < 20; i++)
-            {
-                if (grabSolutionProject()!=null)
-                {
-                    break;
-                }
-                else
-                {
-                    System.Threading.Thread.Sleep(500);
-                }
-            }
+            grabSolutionProject();
+
             if (Project == null)
             {
                 MessageBox.Show("Failed to load in project");
@@ -361,127 +352,22 @@ namespace tcSlnFormBuilder
             catch
             {
                 //Add NC Task
-                for (int i = 0; i < 20; i++)
-                {
-                    if (createNcTask())
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        System.Threading.Thread.Sleep(500);
-                        if (i == 19)
-                        {
-                            MessageBox.Show("Failed to create NC task");
-                            MessageFilter.Revoke();
-                            return;
-                        }
-                    }
-                }
+                createNcTask();
             }
-            
+
 
             //Add NC Axes (2 of them)
-            for (int i = 0; i < 10; i++)
-            {
-                if (addNcAxis())
-                {
-                    break;
-                }
-                else
-                {
-                    System.Threading.Thread.Sleep(500);
-                    if (i == 9)
-                    {
-                        MessageBox.Show("Failed to add NC axis");
-                        MessageFilter.Revoke();
-                        return;
-                    }
-                }
-            }
-            System.Threading.Thread.Sleep(500);
-            for (int i = 0; i < 10; i++)
-            {
-                if (addNcAxis())
-                {
-                    break;
-                }
-                else
-                {
-                    System.Threading.Thread.Sleep(500);
-                    if (i == 9)
-                    {
-                        MessageBox.Show("Failed to add NC axis");
-                        MessageFilter.Revoke();
-                        return;
-                    }
-                }
-            }
-           
+            addNcAxis();
+            addNcAxis();
+
 
             //Add the IO and startup next
-            
-            xmlDoc = new XmlDocument();
-            
-            System.Threading.Thread.Sleep(1000);
-            ITcSmTreeItem devices = SystemManager.LookupTreeItem("TIID");
-            devices.CreateChild("Device 1 (EtherCAT)", 111, null, null);
+            importIoList();
+            importAllIoXmls();
 
-            ITcSmTreeItem etherCatMaster = SystemManager.LookupTreeItem("TIID^Device 1 (EtherCAT)");
-            etherCatMaster.CreateChild("Term 1 (EK1200)", 9099, "", "EK1200-5000");
-            ITcSmTreeItem ek1200 = SystemManager.LookupTreeItem("TIID^Device 1 (EtherCAT)^Term 1 (EK1200)");
-            ek1200.CreateChild("Term 2 (EL1808)", 9099, "", "EL1808");
-            ek1200.CreateChild("Term 3 (EL2819)", 9099, "", "EL2819");
-            ek1200.CreateChild("Term 4 (EL5002)", 9099, "", "EL5002");
-            ek1200.CreateChild("Term 5 (EL2014)", 9099, "", "EL2014");
-            ek1200.CreateChild("Term 6 (EL7041-0052)", 9099, "", "EL7041-0052");
-            ek1200.CreateChild("Term 7 (EL7041-0052)", 9099, "", "EL7041-0052");
-            ek1200.CreateChild("Term 8 (EK1110)", 9099, "", "EK1110");
-
-            xmlFolderPath = @"C:\Users\SCooper - work\Documents\Git Repos\TEST CRATE HARDWARE";
-            xmlPath = xmlFolderPath + @"\el7041Term6.xml";
-            xmlDoc.Load(xmlPath);
-            SystemManager.LookupTreeItem("TIID^Device 1 (EtherCAT)^Term 1 (EK1200)^Term 6 (EL7041-0052)").ConsumeXml(xmlDoc.OuterXml);
-            xmlPath = xmlFolderPath + @"\el7041Term7.xml";
-            xmlDoc.Load(xmlPath);
-            SystemManager.LookupTreeItem("TIID^Device 1 (EtherCAT)^Term 1 (EK1200)^Term 7 (EL7041-0052)").ConsumeXml(xmlDoc.OuterXml);
-
-            
-            xmlPath = xmlFolderPath + @"\ioConfig.xml";
-            xmlDoc.Load(xmlPath);
-            //devices.Child[1].ConsumeXml(xmlDoc.OuterXml);
-            devices.ConsumeXml(xmlDoc.OuterXml);
-            //etherCatMaster.ConsumeXml(xmlDoc.OuterXml);
             //Setup axes
-
-
-            xmlPath = xmlFolderPath + @"\Axis 1.xml";
-            
-            xmlDoc.Load(xmlPath);
-            try
-            {
-
-                //axis = SystemManager.LookupTreeItem("TINC^NC-Task 1 SAF^Axes^Axis 1");
-                ncAxisConsumeMap(1,xmlDoc.OuterXml);
-            }
-            catch
-            {
-                MessageBox.Show("Failed to add parameters");
-            }
-            xmlPath = xmlFolderPath + @"\Axis 2.xml";
-            xmlDoc.Load(xmlPath);
-            try
-            {
-
-                //axis = SystemManager.LookupTreeItem("TINC^NC-Task 1 SAF^Axes^Axis 2");
-                ncAxisConsumeMap(2,xmlDoc.OuterXml);
-            }
-            catch
-            {
-                MessageBox.Show("Failed to add parameters");
-            }
-
-            System.Threading.Thread.Sleep(1000);
+            ncConsumeAllMaps();
+            /*
             //Add PLC stuff
             ITcSmTreeItem plcPou = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^POUs^MAIN");
             ITcPlcPou mainPou = (ITcPlcPou)plcPou;
@@ -510,6 +396,8 @@ namespace tcSlnFormBuilder
             xmlDoc.Load(xmlPath);
             SystemManager.ConsumeMappingInfo(xmlDoc.OuterXml);
             SystemManager.ActivateConfiguration();
+            */
+            
             MessageFilter.Revoke();
             MessageBox.Show("Success!");
         }

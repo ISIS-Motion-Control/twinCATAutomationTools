@@ -64,6 +64,8 @@
     <Reference Include="envdte, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Microsoft.VisualBasic.Compatibility" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -85,16 +87,16 @@
     <Compile Include="Form.Designer.cs">
       <DependentUpon>Form.cs</DependentUpon>
     </Compile>
-    <Compile Include="ioTools.cs" />
+    <Compile Include="partialTools\ioTools.cs" />
     <Compile Include="MessageFilter.cs" />
-    <Compile Include="mapTools.cs" />
+    <Compile Include="partialTools\mapTools.cs" />
+    <Compile Include="partialTools\plcTools.cs" />
     <Compile Include="PlcBuilder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="tcSln.cs" />
     <Compile Include="VSVersion.cs" />
-    <Compile Include="NcTools.cs" />
-    <Compile Include="XmlTools - not in use.cs" />
+    <Compile Include="partialTools\NcTools.cs" />
     <EmbeddedResource Include="Form.resx">
       <DependentUpon>Form.cs</DependentUpon>
     </EmbeddedResource>

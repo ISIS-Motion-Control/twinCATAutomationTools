@@ -56,6 +56,9 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.buttonClearMappings = new System.Windows.Forms.Button();
             this.buttonCopySolutionDir = new System.Windows.Forms.Button();
+            this.buttonImportDeviceList = new System.Windows.Forms.Button();
+            this.buttonImportIoXmls = new System.Windows.Forms.Button();
+            this.buttonImportNcXmls = new System.Windows.Forms.Button();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -181,10 +184,10 @@
             // 
             // buttonAddTestCrateConfig
             // 
-            this.buttonAddTestCrateConfig.Location = new System.Drawing.Point(1056, 864);
+            this.buttonAddTestCrateConfig.Location = new System.Drawing.Point(880, 160);
             this.buttonAddTestCrateConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonAddTestCrateConfig.Name = "buttonAddTestCrateConfig";
-            this.buttonAddTestCrateConfig.Size = new System.Drawing.Size(499, 46);
+            this.buttonAddTestCrateConfig.Size = new System.Drawing.Size(599, 46);
             this.buttonAddTestCrateConfig.TabIndex = 31;
             this.buttonAddTestCrateConfig.Text = "Add Test Crate Hardware";
             this.buttonAddTestCrateConfig.UseVisualStyleBackColor = true;
@@ -241,23 +244,23 @@
             // 
             // buttonExportDevice1
             // 
-            this.buttonExportDevice1.Location = new System.Drawing.Point(1056, 920);
+            this.buttonExportDevice1.Location = new System.Drawing.Point(1486, 446);
             this.buttonExportDevice1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonExportDevice1.Name = "buttonExportDevice1";
-            this.buttonExportDevice1.Size = new System.Drawing.Size(499, 46);
+            this.buttonExportDevice1.Size = new System.Drawing.Size(413, 46);
             this.buttonExportDevice1.TabIndex = 39;
-            this.buttonExportDevice1.Text = "Export IO File";
+            this.buttonExportDevice1.Text = "Export IO XTI File";
             this.buttonExportDevice1.UseVisualStyleBackColor = true;
             this.buttonExportDevice1.Click += new System.EventHandler(this.buttonExportDevice1_Click);
             // 
             // buttonImportDevice1
             // 
-            this.buttonImportDevice1.Location = new System.Drawing.Point(1056, 976);
+            this.buttonImportDevice1.Location = new System.Drawing.Point(1486, 502);
             this.buttonImportDevice1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonImportDevice1.Name = "buttonImportDevice1";
-            this.buttonImportDevice1.Size = new System.Drawing.Size(499, 46);
+            this.buttonImportDevice1.Size = new System.Drawing.Size(413, 46);
             this.buttonImportDevice1.TabIndex = 40;
-            this.buttonImportDevice1.Text = "Import IO File";
+            this.buttonImportDevice1.Text = "Import IO XTI File";
             this.buttonImportDevice1.UseVisualStyleBackColor = true;
             this.buttonImportDevice1.Click += new System.EventHandler(this.buttonImportDevice1_Click);
             // 
@@ -297,14 +300,47 @@
             // 
             // buttonCopySolutionDir
             // 
-            this.buttonCopySolutionDir.Location = new System.Drawing.Point(880, 103);
+            this.buttonCopySolutionDir.Location = new System.Drawing.Point(880, 94);
             this.buttonCopySolutionDir.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonCopySolutionDir.Name = "buttonCopySolutionDir";
-            this.buttonCopySolutionDir.Size = new System.Drawing.Size(179, 26);
+            this.buttonCopySolutionDir.Size = new System.Drawing.Size(179, 44);
             this.buttonCopySolutionDir.TabIndex = 44;
             this.buttonCopySolutionDir.Text = "Copy Solution Dir";
             this.buttonCopySolutionDir.UseVisualStyleBackColor = true;
             this.buttonCopySolutionDir.Click += new System.EventHandler(this.buttonCopySolutionDir_Click);
+            // 
+            // buttonImportDeviceList
+            // 
+            this.buttonImportDeviceList.Location = new System.Drawing.Point(1064, 864);
+            this.buttonImportDeviceList.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonImportDeviceList.Name = "buttonImportDeviceList";
+            this.buttonImportDeviceList.Size = new System.Drawing.Size(499, 46);
+            this.buttonImportDeviceList.TabIndex = 45;
+            this.buttonImportDeviceList.Text = "Import IO List File";
+            this.buttonImportDeviceList.UseVisualStyleBackColor = true;
+            this.buttonImportDeviceList.Click += new System.EventHandler(this.buttonImportDeviceList_Click);
+            // 
+            // buttonImportIoXmls
+            // 
+            this.buttonImportIoXmls.Location = new System.Drawing.Point(1064, 920);
+            this.buttonImportIoXmls.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonImportIoXmls.Name = "buttonImportIoXmls";
+            this.buttonImportIoXmls.Size = new System.Drawing.Size(499, 46);
+            this.buttonImportIoXmls.TabIndex = 46;
+            this.buttonImportIoXmls.Text = "Import IO XMLs";
+            this.buttonImportIoXmls.UseVisualStyleBackColor = true;
+            this.buttonImportIoXmls.Click += new System.EventHandler(this.buttonImportIoXmls_Click);
+            // 
+            // buttonImportNcXmls
+            // 
+            this.buttonImportNcXmls.Location = new System.Drawing.Point(1064, 976);
+            this.buttonImportNcXmls.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonImportNcXmls.Name = "buttonImportNcXmls";
+            this.buttonImportNcXmls.Size = new System.Drawing.Size(499, 46);
+            this.buttonImportNcXmls.TabIndex = 47;
+            this.buttonImportNcXmls.Text = "Import NC XMLs";
+            this.buttonImportNcXmls.UseVisualStyleBackColor = true;
+            this.buttonImportNcXmls.Click += new System.EventHandler(this.buttonImportNcXmls_Click);
             // 
             // Form1
             // 
@@ -313,6 +349,9 @@
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(1914, 1062);
+            this.Controls.Add(this.buttonImportNcXmls);
+            this.Controls.Add(this.buttonImportIoXmls);
+            this.Controls.Add(this.buttonImportDeviceList);
             this.Controls.Add(this.buttonCopySolutionDir);
             this.Controls.Add(this.buttonClearMappings);
             this.Controls.Add(this.textBox1);
@@ -375,6 +414,9 @@
         internal System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button buttonClearMappings;
         private System.Windows.Forms.Button buttonCopySolutionDir;
+        private System.Windows.Forms.Button buttonImportDeviceList;
+        private System.Windows.Forms.Button buttonImportIoXmls;
+        private System.Windows.Forms.Button buttonImportNcXmls;
     }
 }
 
