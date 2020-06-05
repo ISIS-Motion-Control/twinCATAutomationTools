@@ -161,8 +161,10 @@ namespace tcSlnFormBuilder
 
         private void buttonTesting_Click(object sender, EventArgs e)
         {
-            mySln.plcAddMainDeclaration();
+            //mySln.plcAddMainDeclaration();
             //mySln.plcNewGvlAppDeclaration();
+            //mySln.modifyDeclaration(@"C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\twinCATAutomationTools\Config Folder\plc\mainDeclaration.txt");
+            mySln.plcImportDeclarations();
         }
     }
 }

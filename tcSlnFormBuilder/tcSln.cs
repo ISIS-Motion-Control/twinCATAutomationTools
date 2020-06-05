@@ -419,8 +419,7 @@ namespace tcSlnFormBuilder
             ncConsumeAllMaps();
 
             //Add the plc "stuff"
-            plcAddMainDeclaration();
-            plcNewGvlAppDeclaration();
+            plcImportDeclarations();
 
             //Map the variables
             importXmlMap();
