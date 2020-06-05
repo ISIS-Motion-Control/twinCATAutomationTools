@@ -1,0 +1,6 @@
+VAR
+    bEnableAxis1Limits AT %Q*: BOOL:=TRUE;
+    bEnableAxis2Limits AT %Q*: BOOL:=TRUE;
+    bEnableAxis1Enc AT %Q*: BOOL:=TRUE;
+    bEnableAxis2Enc AT %Q*: BOOL:=TRUE;
+END_VAR

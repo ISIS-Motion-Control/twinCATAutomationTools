@@ -27,13 +27,13 @@ namespace tcSlnFormBuilder
         private ITcSysManager13 _systemManager;
         public XmlDocument xmlDoc;  //Generic holder for xmlDocument
         public String xmlPath;
+        private String _slnFolder;
         
-        public String solutionPath = " ";
-        public String solutionFolder = " ";
-        public String _configFolder = " "; //Used for all XTIs and XML. Should create folder if doesn't exist
+        //public String solutionPath;
+        public String _configFolder; //Used for all XTIs and XML. Should create folder if doesn't exist
 
-        public String xmlHwMapPath = " ";
-        public String xmlFolderPath = " ";
+        public String xmlHwMapPath;
+        public String xmlFolderPath;
         
         public VSVersion version = VSVersion.TWINCAT_SHELL;
 
@@ -74,12 +74,17 @@ namespace tcSlnFormBuilder
         }
         public String ConfigFolder
         {
-            get { return _configFolder ?? (_configFolder = solutionFolder + @"\Config"); }
+            get { return _configFolder ?? (_configFolder = SlnFolder + @"\Config"); }
             set 
             { 
                 _configFolder = value;
                 Directory.CreateDirectory(_configFolder);
             }
+        }
+        public String SlnFolder
+        {
+            get { return _slnFolder ?? (_slnFolder = ""); }
+            set { _slnFolder = value; }
         }
 
         //METHODS
@@ -196,14 +201,14 @@ namespace tcSlnFormBuilder
             try
             {
                 solution = quickSetupDTE();
-                solution.Open(solutionPath);
-                solutionFolder = new FileInfo(solutionPath).Directory.FullName;
+                solution.Open(SlnPath);
+                SlnFolder = new FileInfo(SlnPath).Directory.FullName;
                 return solution;
                 
             }
             catch
             {
-                throw new ApplicationException($"Unable to open '{solutionPath}'");
+                throw new ApplicationException($"Unable to open '{SlnPath}'");
             }
         }
 
@@ -292,18 +297,10 @@ namespace tcSlnFormBuilder
             }
         }
 
-        
-        public void exportHW()  //This is not really doing what I want it to at the moment. I need to look at using the import and export XTI option
-        {   //Export XTI apparently does everything under it too
-            ITcSmTreeItem etherCatMaster = SystemManager.LookupTreeItem("TIID^Device 1 (EtherCAT)");
-            xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(etherCatMaster.ProduceXml());
-            xmlFolderPath = solutionFolder;
-            xmlDoc.Save(xmlFolderPath + "hwScan.xml");
-            MessageBox.Show("Success");           
+        public void cleanUp()
+        {
+            MessageFilter.Revoke();
         }
-
- 
 
 
 
@@ -322,28 +319,52 @@ namespace tcSlnFormBuilder
 
         public void setupTestCrate()
         {
-            openSolution();
-            grabSolutionProject();
+            DialogResult dialogResult;
+            //Check solution not empty
 
+            if (String.IsNullOrEmpty(SlnPath))
+            {
+                MessageBox.Show("You have not selected a solution folder", "Oopsie", MessageBoxButtons.OK);
+                return;
+            }
+            //CHECK CONFIG NOT EMPTY FIRST!!!
+            if (ConfigFolder == @"\Config")
+            {
+                MessageBox.Show("You have not selected a configuration folder", "Oopsie", MessageBoxButtons.OK);
+                return;
+            }
+
+            //If no open project, load the selected on
+            if (solution == null)
+            {
+                openSolution();
+            }
+            
+            //populate the "project" object
+            grabSolutionProject();
+            //Check we successfully got the project
             if (Project == null)
             {
                 MessageBox.Show("Failed to load in project");
-                MessageFilter.Revoke();
+                cleanUp();
                 return;
             }
-            //Break to connect to hardware
-            DialogResult dialogResult = MessageBox.Show("Connect to test crate", "Time for a break", MessageBoxButtons.OKCancel);
+
+
+            //User prompt to connect to hardware
+            dialogResult = MessageBox.Show(@"Connect to test crate." + Environment.NewLine + "Once connected press OK to confirm or cancel to exit the automated setup", "Time for a break", MessageBoxButtons.OKCancel);
             if(dialogResult == DialogResult.Cancel)
             {
                 MessageFilter.Revoke();
                 return;
             }
+            
 
 
             //Solution loaded and project loaded
             //Next task: add NC and parameterise 
-            //SystemManager = (ITcSysManager13) project.Object;
-            //Create NC Task
+            
+            //Check if an NC task exists, create if not (task exists in default tc_generic code)
             try
             {
                 //Look for existing NC Task
@@ -356,56 +377,67 @@ namespace tcSlnFormBuilder
             }
 
 
-            //Add NC Axes (2 of them)
+            //Check whether the project already has axes and prompt user
+            if (getAxisCount() != 0)
+            {
+                dialogResult = MessageBox.Show("Axes already exists in this solution. Do you want to remove them?", "Time for a break", MessageBoxButtons.YesNoCancel);
+                if (dialogResult == DialogResult.Cancel)
+                {
+                    cleanUp();
+                    return;
+                }
+                if (dialogResult == DialogResult.Yes)
+                {
+                    deleteAxes();
+                }
+            }
+            //Add two new axes - should probably make a method accepting int input to create n axes
             addNcAxis();
             addNcAxis();
 
 
-            //Add the IO and startup next
+            //Check whether the project already has IO in it and prompt user
+            if (getIoCount() != 0)
+            {
+                dialogResult = MessageBox.Show("Hardware already exists in this solution. Do you want to remove this?", "Time for a break", MessageBoxButtons.YesNoCancel);
+                if (dialogResult == DialogResult.Cancel)
+                {
+                    MessageFilter.Revoke();
+                    return;
+                }
+                if (dialogResult == DialogResult.Yes)
+                {
+                    deleteIo();
+                }
+            }
+            //Add the IO from a CSV file
             importIoList();
+            //Run through all device xmls and import
             importAllIoXmls();
 
-            //Setup axes
+            //Setup axis parameters from available axis xmls
             ncConsumeAllMaps();
-            /*
-            //Add PLC stuff
-            ITcSmTreeItem plcPou = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^POUs^MAIN");
-            ITcPlcPou mainPou = (ITcPlcPou)plcPou;
-            ITcPlcDeclaration mainPouDec = (ITcPlcDeclaration)plcPou;
-            String declarationText = mainPouDec.DeclarationText;
-            declarationText = declarationText + Environment.NewLine + "VAR" + Environment.NewLine + "    bEnableAxis1Limits AT %Q*: BOOL:=TRUE;" + Environment.NewLine + "    bEnableAxis2Limits AT %Q*: BOOL:=TRUE;" + Environment.NewLine + "    bEnableAxis1Enc AT %Q*: BOOL:=TRUE;" + Environment.NewLine+"    bEnableAxis2Enc AT %Q*: BOOL:=TRUE;" + Environment.NewLine+"END_VAR";
-            mainPouDec.DeclarationText = declarationText;
 
-            //ITcSmTreeItem gvlPouItem = systemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^GVLs^GVL_APP");
-            System.Threading.Thread.Sleep(500);
-            ITcSmTreeItem gvlPouItem = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^GVLs").Child[1];
+            //Add the plc "stuff"
+            plcAddMainDeclaration();
+            plcNewGvlAppDeclaration();
 
-            ITcPlcDeclaration gvlPouDec = (ITcPlcDeclaration)gvlPouItem;
-            gvlPouDec.DeclarationText = "{attribute 'qualified_only'}"+Environment.NewLine+"VAR_GLOBAL"+Environment.NewLine+Environment.NewLine+"END_VAR"+Environment.NewLine+Environment.NewLine+"VAR_GLOBAL CONSTANT"+Environment.NewLine+ "    nAXIS_NUM : UINT:=2;" + Environment.NewLine+"END_VAR";
+            //Map the variables
+            importXmlMap();
 
-            System.Threading.Thread.Sleep(1000);
-            dialogResult = MessageBox.Show("Manually activate configuration", "Time for a break", MessageBoxButtons.OKCancel);
-            if (dialogResult == DialogResult.Cancel)
+            try
             {
-                MessageFilter.Revoke();
-                return;
+                SystemManager.ActivateConfiguration();
             }
-            //systemManager.ActivateConfiguration();
-            //ACtivate wasn't working, think I need to create the config first! There's a command to do this i think
-            xmlPath = xmlFolderPath + @"\xmlMapMCU_HW.xml";
-            xmlDoc.Load(xmlPath);
-            SystemManager.ConsumeMappingInfo(xmlDoc.OuterXml);
-            SystemManager.ActivateConfiguration();
-            */
-            
-            MessageFilter.Revoke();
+            catch
+            {
+                cleanUp();
+                throw new ApplicationException("Unable to activate configuration");
+            }
+            cleanUp();
             MessageBox.Show("Success!");
         }
-
-
-
-        /////////DEVELOPING NEW METHODS HERE
-        
+       
     }
 }
 
