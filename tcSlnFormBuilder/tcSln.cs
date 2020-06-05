@@ -10,6 +10,7 @@ using System.Diagnostics;
 using EnvDTE;
 using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Microsoft.VisualBasic;
 
 namespace tcSlnFormBuilder
 {
@@ -26,15 +27,14 @@ namespace tcSlnFormBuilder
         private ITcSysManager13 _systemManager;
         public XmlDocument xmlDoc;  //Generic holder for xmlDocument
         public String xmlPath;
-        public XmlTools xmlTools= new XmlTools();
+        private String _slnFolder;
         
-        public String solutionPath = " ";
-        public String solutionFolder = " ";
-        public String _configFolder = " "; //Used for all XTIs and XML. Should create folder if doesn't exist
+        //public String solutionPath;
+        public String _configFolder; //Used for all XTIs and XML. Should create folder if doesn't exist
 
-        public String xmlHwMapPath = " ";
-        public String xmlFolderPath = " ";
-        public ITcSmTreeItem axis;
+        public String xmlHwMapPath;
+        public String xmlFolderPath;
+        
         public VSVersion version = VSVersion.TWINCAT_SHELL;
 
         public tcSln()
@@ -74,12 +74,17 @@ namespace tcSlnFormBuilder
         }
         public String ConfigFolder
         {
-            get { return _configFolder ?? (_configFolder = solutionFolder + @"\Config"); }
+            get { return _configFolder ?? (_configFolder = SlnFolder + @"\Config"); }
             set 
             { 
                 _configFolder = value;
                 Directory.CreateDirectory(_configFolder);
             }
+        }
+        public String SlnFolder
+        {
+            get { return _slnFolder ?? (_slnFolder = ""); }
+            set { _slnFolder = value; }
         }
 
         //METHODS
@@ -196,14 +201,14 @@ namespace tcSlnFormBuilder
             try
             {
                 solution = quickSetupDTE();
-                solution.Open(solutionPath);
-                solutionFolder = new FileInfo(solutionPath).Directory.FullName;
+                solution.Open(SlnPath);
+                SlnFolder = new FileInfo(SlnPath).Directory.FullName;
                 return solution;
                 
             }
             catch
             {
-                throw new ApplicationException($"Unable to open '{solutionPath}'");
+                throw new ApplicationException($"Unable to open '{SlnPath}'");
             }
         }
 
@@ -292,18 +297,10 @@ namespace tcSlnFormBuilder
             }
         }
 
-        
-        public void exportHW()  //This is not really doing what I want it to at the moment. I need to look at using the import and export XTI option
-        {   //Export XTI apparently does everything under it too
-            ITcSmTreeItem etherCatMaster = SystemManager.LookupTreeItem("TIID^Device 1 (EtherCAT)");
-            xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(etherCatMaster.ProduceXml());
-            xmlFolderPath = solutionFolder;
-            xmlDoc.Save(xmlFolderPath + "hwScan.xml");
-            MessageBox.Show("Success");           
+        public void cleanUp()
+        {
+            MessageFilter.Revoke();
         }
-
- 
 
 
 
@@ -322,37 +319,52 @@ namespace tcSlnFormBuilder
 
         public void setupTestCrate()
         {
-            openSolution();
-            for (int i = 0; i < 20; i++)
+            DialogResult dialogResult;
+            //Check solution not empty
+
+            if (String.IsNullOrEmpty(SlnPath))
             {
-                if (grabSolutionProject()!=null)
-                {
-                    break;
-                }
-                else
-                {
-                    System.Threading.Thread.Sleep(500);
-                }
+                MessageBox.Show("You have not selected a solution folder", "Oopsie", MessageBoxButtons.OK);
+                return;
             }
+            //CHECK CONFIG NOT EMPTY FIRST!!!
+            if (ConfigFolder == @"\Config")
+            {
+                MessageBox.Show("You have not selected a configuration folder", "Oopsie", MessageBoxButtons.OK);
+                return;
+            }
+
+            //If no open project, load the selected on
+            if (solution == null)
+            {
+                openSolution();
+            }
+            
+            //populate the "project" object
+            grabSolutionProject();
+            //Check we successfully got the project
             if (Project == null)
             {
                 MessageBox.Show("Failed to load in project");
-                MessageFilter.Revoke();
+                cleanUp();
                 return;
             }
-            //Break to connect to hardware
-            DialogResult dialogResult = MessageBox.Show("Connect to test crate", "Time for a break", MessageBoxButtons.OKCancel);
+
+
+            //User prompt to connect to hardware
+            dialogResult = MessageBox.Show(@"Connect to test crate." + Environment.NewLine + "Once connected press OK to confirm or cancel to exit the automated setup", "Time for a break", MessageBoxButtons.OKCancel);
             if(dialogResult == DialogResult.Cancel)
             {
                 MessageFilter.Revoke();
                 return;
             }
+            
 
 
             //Solution loaded and project loaded
             //Next task: add NC and parameterise 
-            //SystemManager = (ITcSysManager13) project.Object;
-            //Create NC Task
+            
+            //Check if an NC task exists, create if not (task exists in default tc_generic code)
             try
             {
                 //Look for existing NC Task
@@ -361,163 +373,71 @@ namespace tcSlnFormBuilder
             catch
             {
                 //Add NC Task
-                for (int i = 0; i < 20; i++)
-                {
-                    if (createNcTask())
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        System.Threading.Thread.Sleep(500);
-                        if (i == 19)
-                        {
-                            MessageBox.Show("Failed to create NC task");
-                            MessageFilter.Revoke();
-                            return;
-                        }
-                    }
-                }
+                createNcTask();
             }
-            
 
-            //Add NC Axes (2 of them)
-            for (int i = 0; i < 10; i++)
+
+            //Check whether the project already has axes and prompt user
+            if (getAxisCount() != 0)
             {
-                if (addNcAxis())
+                dialogResult = MessageBox.Show("Axes already exists in this solution. Do you want to remove them?", "Time for a break", MessageBoxButtons.YesNoCancel);
+                if (dialogResult == DialogResult.Cancel)
                 {
-                    break;
+                    cleanUp();
+                    return;
                 }
-                else
+                if (dialogResult == DialogResult.Yes)
                 {
-                    System.Threading.Thread.Sleep(500);
-                    if (i == 9)
-                    {
-                        MessageBox.Show("Failed to add NC axis");
-                        MessageFilter.Revoke();
-                        return;
-                    }
+                    deleteAxes();
                 }
             }
-            System.Threading.Thread.Sleep(500);
-            for (int i = 0; i < 10; i++)
+            //Add two new axes - should probably make a method accepting int input to create n axes
+            addNcAxis();
+            addNcAxis();
+
+
+            //Check whether the project already has IO in it and prompt user
+            if (getIoCount() != 0)
             {
-                if (addNcAxis())
+                dialogResult = MessageBox.Show("Hardware already exists in this solution. Do you want to remove this?", "Time for a break", MessageBoxButtons.YesNoCancel);
+                if (dialogResult == DialogResult.Cancel)
                 {
-                    break;
+                    MessageFilter.Revoke();
+                    return;
                 }
-                else
+                if (dialogResult == DialogResult.Yes)
                 {
-                    System.Threading.Thread.Sleep(500);
-                    if (i == 9)
-                    {
-                        MessageBox.Show("Failed to add NC axis");
-                        MessageFilter.Revoke();
-                        return;
-                    }
+                    deleteIo();
                 }
             }
-           
+            //Add the IO from a CSV file
+            importIoList();
+            //Run through all device xmls and import
+            importAllIoXmls();
 
-            //Add the IO and startup next
-            
-            xmlDoc = new XmlDocument();
-            
-            System.Threading.Thread.Sleep(1000);
-            ITcSmTreeItem devices = SystemManager.LookupTreeItem("TIID");
-            devices.CreateChild("Device 1 (EtherCAT)", 111, null, null);
+            //Setup axis parameters from available axis xmls
+            ncConsumeAllMaps();
 
-            ITcSmTreeItem etherCatMaster = SystemManager.LookupTreeItem("TIID^Device 1 (EtherCAT)");
-            etherCatMaster.CreateChild("Term 1 (EK1200)", 9099, "", "EK1200-5000");
-            ITcSmTreeItem ek1200 = SystemManager.LookupTreeItem("TIID^Device 1 (EtherCAT)^Term 1 (EK1200)");
-            ek1200.CreateChild("Term 2 (EL1808)", 9099, "", "EL1808");
-            ek1200.CreateChild("Term 3 (EL2819)", 9099, "", "EL2819");
-            ek1200.CreateChild("Term 4 (EL5002)", 9099, "", "EL5002");
-            ek1200.CreateChild("Term 5 (EL2014)", 9099, "", "EL2014");
-            ek1200.CreateChild("Term 6 (EL7041-0052)", 9099, "", "EL7041-0052");
-            ek1200.CreateChild("Term 7 (EL7041-0052)", 9099, "", "EL7041-0052");
-            ek1200.CreateChild("Term 8 (EK1110)", 9099, "", "EK1110");
+            //Add the plc "stuff"
+            plcAddMainDeclaration();
+            plcNewGvlAppDeclaration();
 
-            xmlFolderPath = @"C:\Users\SCooper - work\Documents\Git Repos\TEST CRATE HARDWARE";
-            xmlPath = xmlFolderPath + @"\el7041Term6.xml";
-            xmlDoc.Load(xmlPath);
-            SystemManager.LookupTreeItem("TIID^Device 1 (EtherCAT)^Term 1 (EK1200)^Term 6 (EL7041-0052)").ConsumeXml(xmlDoc.OuterXml);
-            xmlPath = xmlFolderPath + @"\el7041Term7.xml";
-            xmlDoc.Load(xmlPath);
-            SystemManager.LookupTreeItem("TIID^Device 1 (EtherCAT)^Term 1 (EK1200)^Term 7 (EL7041-0052)").ConsumeXml(xmlDoc.OuterXml);
+            //Map the variables
+            importXmlMap();
 
-            
-            xmlPath = xmlFolderPath + @"\ioConfig.xml";
-            xmlDoc.Load(xmlPath);
-            //devices.Child[1].ConsumeXml(xmlDoc.OuterXml);
-            devices.ConsumeXml(xmlDoc.OuterXml);
-            //etherCatMaster.ConsumeXml(xmlDoc.OuterXml);
-            //Setup axes
-
-
-            xmlPath = xmlFolderPath + @"\Axis 1.xml";
-            
-            xmlDoc.Load(xmlPath);
             try
             {
-
-                //axis = SystemManager.LookupTreeItem("TINC^NC-Task 1 SAF^Axes^Axis 1");
-                ncAxisConsumeMap(1,xmlDoc.OuterXml);
+                SystemManager.ActivateConfiguration();
             }
             catch
             {
-                MessageBox.Show("Failed to add parameters");
+                cleanUp();
+                throw new ApplicationException("Unable to activate configuration");
             }
-            xmlPath = xmlFolderPath + @"\Axis 2.xml";
-            xmlDoc.Load(xmlPath);
-            try
-            {
-
-                //axis = SystemManager.LookupTreeItem("TINC^NC-Task 1 SAF^Axes^Axis 2");
-                ncAxisConsumeMap(2,xmlDoc.OuterXml);
-            }
-            catch
-            {
-                MessageBox.Show("Failed to add parameters");
-            }
-
-            System.Threading.Thread.Sleep(1000);
-            //Add PLC stuff
-            ITcSmTreeItem plcPou = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^POUs^MAIN");
-            ITcPlcPou mainPou = (ITcPlcPou)plcPou;
-            ITcPlcDeclaration mainPouDec = (ITcPlcDeclaration)plcPou;
-            String declarationText = mainPouDec.DeclarationText;
-            declarationText = declarationText + Environment.NewLine + "VAR" + Environment.NewLine + "    bEnableAxis1Limits AT %Q*: BOOL:=TRUE;" + Environment.NewLine + "    bEnableAxis2Limits AT %Q*: BOOL:=TRUE;" + Environment.NewLine + "    bEnableAxis1Enc AT %Q*: BOOL:=TRUE;" + Environment.NewLine+"    bEnableAxis2Enc AT %Q*: BOOL:=TRUE;" + Environment.NewLine+"END_VAR";
-            mainPouDec.DeclarationText = declarationText;
-
-            //ITcSmTreeItem gvlPouItem = systemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^GVLs^GVL_APP");
-            System.Threading.Thread.Sleep(500);
-            ITcSmTreeItem gvlPouItem = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^GVLs").Child[1];
-
-            ITcPlcDeclaration gvlPouDec = (ITcPlcDeclaration)gvlPouItem;
-            gvlPouDec.DeclarationText = "{attribute 'qualified_only'}"+Environment.NewLine+"VAR_GLOBAL"+Environment.NewLine+Environment.NewLine+"END_VAR"+Environment.NewLine+Environment.NewLine+"VAR_GLOBAL CONSTANT"+Environment.NewLine+ "    nAXIS_NUM : UINT:=2;" + Environment.NewLine+"END_VAR";
-
-            System.Threading.Thread.Sleep(1000);
-            dialogResult = MessageBox.Show("Manually activate configuration", "Time for a break", MessageBoxButtons.OKCancel);
-            if (dialogResult == DialogResult.Cancel)
-            {
-                MessageFilter.Revoke();
-                return;
-            }
-            //systemManager.ActivateConfiguration();
-            //ACtivate wasn't working, think I need to create the config first! There's a command to do this i think
-            xmlPath = xmlFolderPath + @"\xmlMapMCU_HW.xml";
-            xmlDoc.Load(xmlPath);
-            SystemManager.ConsumeMappingInfo(xmlDoc.OuterXml);
-            SystemManager.ActivateConfiguration();
-            MessageFilter.Revoke();
+            cleanUp();
             MessageBox.Show("Success!");
         }
-
-
-
-        /////////DEVELOPING NEW METHODS HERE
-        
+       
     }
 }
 

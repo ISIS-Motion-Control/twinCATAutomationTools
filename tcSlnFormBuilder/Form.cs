@@ -19,7 +19,7 @@ namespace tcSlnFormBuilder
         {
             InitializeComponent();
             this.mySln = mySln;
-            solutionFileSelect.Text = mySln.solutionPath;
+            solutionFileSelect.Text = mySln.SlnPath;
         }
 
 
@@ -29,7 +29,7 @@ namespace tcSlnFormBuilder
         {
             openSolutionSelect.ShowDialog();
             solutionFileSelect.Text = openSolutionSelect.FileName;
-            mySln.solutionPath = openSolutionSelect.FileName;
+            mySln.SlnPath = openSolutionSelect.FileName;
         }
 
         //Config folder selection box
@@ -118,7 +118,7 @@ namespace tcSlnFormBuilder
         //Use config folder in solution directory
         private void buttonCopySolutionDir_Click(object sender, EventArgs e)
         {
-            configFolderSelect.Text = mySln.solutionFolder + @"\Config";
+            configFolderSelect.Text = mySln.SlnFolder + @"\Config";
             mySln.ConfigFolder = configFolderSelect.Text;
         }
 
@@ -126,6 +126,43 @@ namespace tcSlnFormBuilder
         private void configFolderSelect_TextChanged(object sender, EventArgs e)
         {
             mySln.ConfigFolder = configFolderSelect.Text;
+        }
+
+        private void buttonImportDeviceList_Click(object sender, EventArgs e)
+        {
+            mySln.importIoList();
+        }
+
+        private void buttonImportIoXmls_Click(object sender, EventArgs e)
+        {
+            //mySln.importIoXmls(@"C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\Config Folder\deviceXmls\Device 1 (EtherCAT).xml");
+            mySln.importAllIoXmls();
+        }
+
+        private void buttonImportNcXmls_Click(object sender, EventArgs e)
+        {
+            mySln.ncConsumeAllMaps();
+        }
+
+        private void buttonDeleteAxes_Click(object sender, EventArgs e)
+        {
+            mySln.deleteAxes();
+        }
+
+        private void buttonDeleteIo_Click(object sender, EventArgs e)
+        {
+            mySln.deleteIo();
+        }
+
+        private void buttonCleanUp_Click(object sender, EventArgs e)
+        {
+            mySln.cleanUp();
+        }
+
+        private void buttonTesting_Click(object sender, EventArgs e)
+        {
+            mySln.plcAddMainDeclaration();
+            //mySln.plcNewGvlAppDeclaration();
         }
     }
 }

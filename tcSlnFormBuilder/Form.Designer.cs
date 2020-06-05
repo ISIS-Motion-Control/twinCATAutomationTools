@@ -56,6 +56,13 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.buttonClearMappings = new System.Windows.Forms.Button();
             this.buttonCopySolutionDir = new System.Windows.Forms.Button();
+            this.buttonImportDeviceList = new System.Windows.Forms.Button();
+            this.buttonImportIoXmls = new System.Windows.Forms.Button();
+            this.buttonImportNcXmls = new System.Windows.Forms.Button();
+            this.buttonDeleteAxes = new System.Windows.Forms.Button();
+            this.buttonDeleteIo = new System.Windows.Forms.Button();
+            this.buttonCleanUp = new System.Windows.Forms.Button();
+            this.buttonTesting = new System.Windows.Forms.Button();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -110,7 +117,7 @@
             // 
             // buttonCreateNcTask
             // 
-            this.buttonCreateNcTask.Location = new System.Drawing.Point(779, 864);
+            this.buttonCreateNcTask.Location = new System.Drawing.Point(799, 464);
             this.buttonCreateNcTask.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonCreateNcTask.Name = "buttonCreateNcTask";
             this.buttonCreateNcTask.Size = new System.Drawing.Size(179, 46);
@@ -121,7 +128,7 @@
             // 
             // buttonCreateAxis
             // 
-            this.buttonCreateAxis.Location = new System.Drawing.Point(779, 920);
+            this.buttonCreateAxis.Location = new System.Drawing.Point(799, 520);
             this.buttonCreateAxis.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonCreateAxis.Name = "buttonCreateAxis";
             this.buttonCreateAxis.Size = new System.Drawing.Size(179, 46);
@@ -132,7 +139,7 @@
             // 
             // buttonDeleteNcTask
             // 
-            this.buttonDeleteNcTask.Location = new System.Drawing.Point(779, 976);
+            this.buttonDeleteNcTask.Location = new System.Drawing.Point(799, 576);
             this.buttonDeleteNcTask.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonDeleteNcTask.Name = "buttonDeleteNcTask";
             this.buttonDeleteNcTask.Size = new System.Drawing.Size(179, 46);
@@ -181,10 +188,10 @@
             // 
             // buttonAddTestCrateConfig
             // 
-            this.buttonAddTestCrateConfig.Location = new System.Drawing.Point(1056, 864);
+            this.buttonAddTestCrateConfig.Location = new System.Drawing.Point(880, 160);
             this.buttonAddTestCrateConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonAddTestCrateConfig.Name = "buttonAddTestCrateConfig";
-            this.buttonAddTestCrateConfig.Size = new System.Drawing.Size(499, 46);
+            this.buttonAddTestCrateConfig.Size = new System.Drawing.Size(599, 46);
             this.buttonAddTestCrateConfig.TabIndex = 31;
             this.buttonAddTestCrateConfig.Text = "Add Test Crate Hardware";
             this.buttonAddTestCrateConfig.UseVisualStyleBackColor = true;
@@ -241,23 +248,23 @@
             // 
             // buttonExportDevice1
             // 
-            this.buttonExportDevice1.Location = new System.Drawing.Point(1056, 920);
+            this.buttonExportDevice1.Location = new System.Drawing.Point(1486, 446);
             this.buttonExportDevice1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonExportDevice1.Name = "buttonExportDevice1";
-            this.buttonExportDevice1.Size = new System.Drawing.Size(499, 46);
+            this.buttonExportDevice1.Size = new System.Drawing.Size(413, 46);
             this.buttonExportDevice1.TabIndex = 39;
-            this.buttonExportDevice1.Text = "Export IO File";
+            this.buttonExportDevice1.Text = "Export IO XTI File";
             this.buttonExportDevice1.UseVisualStyleBackColor = true;
             this.buttonExportDevice1.Click += new System.EventHandler(this.buttonExportDevice1_Click);
             // 
             // buttonImportDevice1
             // 
-            this.buttonImportDevice1.Location = new System.Drawing.Point(1056, 976);
+            this.buttonImportDevice1.Location = new System.Drawing.Point(1486, 502);
             this.buttonImportDevice1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonImportDevice1.Name = "buttonImportDevice1";
-            this.buttonImportDevice1.Size = new System.Drawing.Size(499, 46);
+            this.buttonImportDevice1.Size = new System.Drawing.Size(413, 46);
             this.buttonImportDevice1.TabIndex = 40;
-            this.buttonImportDevice1.Text = "Import IO File";
+            this.buttonImportDevice1.Text = "Import IO XTI File";
             this.buttonImportDevice1.UseVisualStyleBackColor = true;
             this.buttonImportDevice1.Click += new System.EventHandler(this.buttonImportDevice1_Click);
             // 
@@ -297,14 +304,91 @@
             // 
             // buttonCopySolutionDir
             // 
-            this.buttonCopySolutionDir.Location = new System.Drawing.Point(880, 103);
+            this.buttonCopySolutionDir.Location = new System.Drawing.Point(880, 94);
             this.buttonCopySolutionDir.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonCopySolutionDir.Name = "buttonCopySolutionDir";
-            this.buttonCopySolutionDir.Size = new System.Drawing.Size(179, 26);
+            this.buttonCopySolutionDir.Size = new System.Drawing.Size(179, 44);
             this.buttonCopySolutionDir.TabIndex = 44;
             this.buttonCopySolutionDir.Text = "Copy Solution Dir";
             this.buttonCopySolutionDir.UseVisualStyleBackColor = true;
             this.buttonCopySolutionDir.Click += new System.EventHandler(this.buttonCopySolutionDir_Click);
+            // 
+            // buttonImportDeviceList
+            // 
+            this.buttonImportDeviceList.Location = new System.Drawing.Point(1065, 799);
+            this.buttonImportDeviceList.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonImportDeviceList.Name = "buttonImportDeviceList";
+            this.buttonImportDeviceList.Size = new System.Drawing.Size(499, 46);
+            this.buttonImportDeviceList.TabIndex = 45;
+            this.buttonImportDeviceList.Text = "Import IO List File";
+            this.buttonImportDeviceList.UseVisualStyleBackColor = true;
+            this.buttonImportDeviceList.Click += new System.EventHandler(this.buttonImportDeviceList_Click);
+            // 
+            // buttonImportIoXmls
+            // 
+            this.buttonImportIoXmls.Location = new System.Drawing.Point(1065, 855);
+            this.buttonImportIoXmls.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonImportIoXmls.Name = "buttonImportIoXmls";
+            this.buttonImportIoXmls.Size = new System.Drawing.Size(499, 46);
+            this.buttonImportIoXmls.TabIndex = 46;
+            this.buttonImportIoXmls.Text = "Import IO XMLs";
+            this.buttonImportIoXmls.UseVisualStyleBackColor = true;
+            this.buttonImportIoXmls.Click += new System.EventHandler(this.buttonImportIoXmls_Click);
+            // 
+            // buttonImportNcXmls
+            // 
+            this.buttonImportNcXmls.Location = new System.Drawing.Point(1065, 911);
+            this.buttonImportNcXmls.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonImportNcXmls.Name = "buttonImportNcXmls";
+            this.buttonImportNcXmls.Size = new System.Drawing.Size(499, 46);
+            this.buttonImportNcXmls.TabIndex = 47;
+            this.buttonImportNcXmls.Text = "Import NC XMLs";
+            this.buttonImportNcXmls.UseVisualStyleBackColor = true;
+            this.buttonImportNcXmls.Click += new System.EventHandler(this.buttonImportNcXmls_Click);
+            // 
+            // buttonDeleteAxes
+            // 
+            this.buttonDeleteAxes.Location = new System.Drawing.Point(799, 632);
+            this.buttonDeleteAxes.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonDeleteAxes.Name = "buttonDeleteAxes";
+            this.buttonDeleteAxes.Size = new System.Drawing.Size(179, 46);
+            this.buttonDeleteAxes.TabIndex = 48;
+            this.buttonDeleteAxes.Text = "Delete Axes";
+            this.buttonDeleteAxes.UseVisualStyleBackColor = true;
+            this.buttonDeleteAxes.Click += new System.EventHandler(this.buttonDeleteAxes_Click);
+            // 
+            // buttonDeleteIo
+            // 
+            this.buttonDeleteIo.Location = new System.Drawing.Point(1065, 967);
+            this.buttonDeleteIo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonDeleteIo.Name = "buttonDeleteIo";
+            this.buttonDeleteIo.Size = new System.Drawing.Size(499, 46);
+            this.buttonDeleteIo.TabIndex = 49;
+            this.buttonDeleteIo.Text = "Delete IO";
+            this.buttonDeleteIo.UseVisualStyleBackColor = true;
+            this.buttonDeleteIo.Click += new System.EventHandler(this.buttonDeleteIo_Click);
+            // 
+            // buttonCleanUp
+            // 
+            this.buttonCleanUp.Location = new System.Drawing.Point(218, 920);
+            this.buttonCleanUp.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonCleanUp.Name = "buttonCleanUp";
+            this.buttonCleanUp.Size = new System.Drawing.Size(179, 46);
+            this.buttonCleanUp.TabIndex = 50;
+            this.buttonCleanUp.Text = "Clean Up";
+            this.buttonCleanUp.UseVisualStyleBackColor = true;
+            this.buttonCleanUp.Click += new System.EventHandler(this.buttonCleanUp_Click);
+            // 
+            // buttonTesting
+            // 
+            this.buttonTesting.Location = new System.Drawing.Point(1135, 667);
+            this.buttonTesting.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonTesting.Name = "buttonTesting";
+            this.buttonTesting.Size = new System.Drawing.Size(179, 46);
+            this.buttonTesting.TabIndex = 51;
+            this.buttonTesting.Text = "Test Button";
+            this.buttonTesting.UseVisualStyleBackColor = true;
+            this.buttonTesting.Click += new System.EventHandler(this.buttonTesting_Click);
             // 
             // Form1
             // 
@@ -313,6 +397,13 @@
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(1914, 1062);
+            this.Controls.Add(this.buttonTesting);
+            this.Controls.Add(this.buttonCleanUp);
+            this.Controls.Add(this.buttonDeleteIo);
+            this.Controls.Add(this.buttonDeleteAxes);
+            this.Controls.Add(this.buttonImportNcXmls);
+            this.Controls.Add(this.buttonImportIoXmls);
+            this.Controls.Add(this.buttonImportDeviceList);
             this.Controls.Add(this.buttonCopySolutionDir);
             this.Controls.Add(this.buttonClearMappings);
             this.Controls.Add(this.textBox1);
@@ -375,6 +466,13 @@
         internal System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button buttonClearMappings;
         private System.Windows.Forms.Button buttonCopySolutionDir;
+        private System.Windows.Forms.Button buttonImportDeviceList;
+        private System.Windows.Forms.Button buttonImportIoXmls;
+        private System.Windows.Forms.Button buttonImportNcXmls;
+        private System.Windows.Forms.Button buttonDeleteAxes;
+        private System.Windows.Forms.Button buttonDeleteIo;
+        private System.Windows.Forms.Button buttonCleanUp;
+        private System.Windows.Forms.Button buttonTesting;
     }
 }
 
