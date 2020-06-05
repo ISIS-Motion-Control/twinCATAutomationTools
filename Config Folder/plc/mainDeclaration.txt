@@ -1,8 +1,0 @@
-tc_project_app^tc_project_app Project^POUs^MAIN
-add
-VAR
-    bEnableAxis1Limits AT %Q*: BOOL:=TRUE;
-    bEnableAxis2Limits AT %Q*: BOOL:=TRUE;
-    bEnableAxis1Enc AT %Q*: BOOL:=TRUE;
-    bEnableAxis2Enc AT %Q*: BOOL:=TRUE;
-END_VAR
