@@ -166,5 +166,11 @@ namespace tcSlnFormBuilder
             //mySln.modifyDeclaration(@"C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\twinCATAutomationTools\Config Folder\plc\mainDeclaration.txt");
             mySln.plcImportDeclarations();
         }
+
+        private void toolStripComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            mySln.versionString = toolStripComboBox1.Text;
+            MessageBox.Show(mySln.versionString);
+        }
     }
 }

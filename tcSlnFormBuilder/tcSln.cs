@@ -17,6 +17,14 @@ namespace tcSlnFormBuilder
     public partial class tcSln
     {
 
+        //NOTES
+        //Next steps. Remove need for exceptions:
+        //tcSln
+        //ioTools
+        //mapTools
+        //ncTools
+        //plcTools
+
         //FIELDS
         private String _slnPath;    //Dir for new solution
         private String _slnName;    //Name for new solution
@@ -36,6 +44,7 @@ namespace tcSlnFormBuilder
         public String xmlFolderPath;
         
         public VSVersion version = VSVersion.TWINCAT_SHELL;
+        public String versionString = "TWINCAT_SHELL";
 
         public tcSln()
         {
@@ -200,7 +209,7 @@ namespace tcSlnFormBuilder
         {
             try
             {
-                solution = quickSetupDTE();
+                solution = setupDTE(versionString, true, false, true);
                 solution.Open(SlnPath);
                 SlnFolder = new FileInfo(SlnPath).Directory.FullName;
                 return solution;
@@ -300,21 +309,6 @@ namespace tcSlnFormBuilder
         public void cleanUp()
         {
             MessageFilter.Revoke();
-        }
-
-
-
-        public void importHardwareXTI(string xtiFile = @"C:\Users\SCooper - work\Documents\Git Repos\TEST CRATE HARDWARE\ Device 1 (EtherCAT).xti")
-        {
-            try
-            {
-                ITcSmTreeItem io = SystemManager.LookupTreeItem("TIID");
-                io.ImportChild(xtiFile);
-            }
-            catch
-            {
-                throw new ApplicationException($"Unable to import hardware");
-            }
         }
 
         public void setupTestCrate()
@@ -437,6 +431,7 @@ namespace tcSlnFormBuilder
             MessageBox.Show("Success!");
         }
        
+
     }
 }
 

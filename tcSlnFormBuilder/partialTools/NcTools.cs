@@ -18,6 +18,7 @@ namespace tcSlnFormBuilder
     {
         private ITcSmTreeItem _ncConfig;
         private ITcSmTreeItem _axes;
+        private String _axisDirectory = @"\axisXmls";
         
 
         public ITcSmTreeItem NcConfig
@@ -30,19 +31,26 @@ namespace tcSlnFormBuilder
             get { return _axes ?? (_axes = NcConfig.Child[1].LookupChild("Axes")); }
             set { _axes = value; }
         }
+        public String AxisDirectory
+        {
+            get { return _axisDirectory; }
+            set { _axisDirectory = value; }
+        }
 
         /// <summary>
         /// Create NC Task in solution
         /// </summary>
         /// <returns></returns>
-        public Boolean createNcTask()
+        public void createNcTask()
         {
             try
             {
                 NcConfig.CreateChild("NC-Task 1", 1);
-                return true;
             }
-            catch { return false; }
+            catch 
+            {
+                throw new ApplicationException("Unable to create NC Task"); 
+            }
         }
         
         /// <summary>
@@ -107,10 +115,12 @@ namespace tcSlnFormBuilder
             }           
         }
         
-
+        /// <summary>
+        /// For each xml file in axis directory folder, import parameters
+        /// </summary>
         public void ncConsumeAllMaps()
         {
-            string axisFolder = ConfigFolder + @"\axisXmls\";
+            string axisFolder = ConfigFolder + AxisDirectory;
             if (!Directory.Exists(axisFolder))
             {
                 throw new ApplicationException($"Folder not found: {axisFolder}");
@@ -121,8 +131,7 @@ namespace tcSlnFormBuilder
                 ncAxisMapSearchConsume(file);
             }
         }
-        
-        
+          
         /// <summary>
         /// Set NC axis parameters
         /// </summary>
@@ -174,8 +183,5 @@ namespace tcSlnFormBuilder
 
             }
         }
-
-
-
     }
 }

@@ -42,24 +42,24 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="tcSlnFormBuilder.exe" size="155672">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="tcSlnFormBuilder.exe" size="153624">
       <assemblyIdentity name="tcSlnFormBuilder" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>aT7dZKUYO2NKG4CygbgKHy1lKrRKGugHwRbRCsAN4UM=</dsig:DigestValue>
+        <dsig:DigestValue>X8Waukc7vATdwkBsoBnrt3IQf7b0nu6+Sr7ec8HDIeo=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="tcSlnFormBuilder.exe.config" size="189">
+  <file name="tcSlnFormBuilder.exe.config" size="190">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>R+Wg8QGvQVHX8T0ta/qbhH1bXkqY0fRnS3wBV3J0bN8=</dsig:DigestValue>
+      <dsig:DigestValue>f+/Nga7dABLHH7eL37hPlTNvToIN5EsRCw4thbgstyQ=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>

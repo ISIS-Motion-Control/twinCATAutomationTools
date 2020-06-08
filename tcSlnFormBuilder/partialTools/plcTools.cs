@@ -11,28 +11,12 @@ using System.IO;
 
 namespace tcSlnFormBuilder
 {
-    /*PLC TOOLS
-     *Ideas:  
-     * adding declaration area variables
-     * adding *?* area code
-     * 
-     */
     public partial class tcSln
     {
-
-        private ITcSmTreeItem _plcPou;
         private ITcSmTreeItem _plc;
-
-        private String _mainDecFile = @"\mainDeclaration.txt";
-        private String _gvlAppDecFile = @"\gvlAppDeclaration.txt";
         private String _plcDirectory = @"\plc";
         private String _decDirectory = @"\declarations";
 
-        public ITcSmTreeItem PlcPou
-        {
-            get { return _plcPou ?? (_plcPou = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^POUs^MAIN")); }
-            set { _plcPou = value; }
-        }
 
         public ITcSmTreeItem Plc
         {
@@ -41,24 +25,30 @@ namespace tcSlnFormBuilder
         }
 
 
-        private String PlcDirectory
+        public String PlcDirectory
         {
             get { return _plcDirectory; }
             set { _plcDirectory = value; }
-        }
-        
-        private String DecDirectory
+        }        
+        public String DecDirectory
         {
             get { return _decDirectory; }
             set { _decDirectory = value; }
         }
-
-        public int plcItemCount()
+        
+        /// <summary>
+        /// Return count of PLC projects in solution
+        /// </summary>
+        /// <returns></returns>
+        public int plcCount()
         {
             MessageBox.Show(Plc.ChildCount.ToString());
             return Plc.ChildCount;
         }
      
+        /// <summary>
+        /// Run through each file in declarations folder and import to solution
+        /// </summary>
         public void plcImportDeclarations()
         {
             string directoryPath = ConfigFolder + PlcDirectory + DecDirectory;
@@ -70,9 +60,12 @@ namespace tcSlnFormBuilder
             {
                 modifyDeclaration(file);
             }
-
         }
         
+        /// <summary>
+        /// Import declaration file
+        /// </summary>
+        /// <param name="decFile"></param>
         public void modifyDeclaration(string decFile)
         {
             //check file exists
@@ -107,23 +100,19 @@ namespace tcSlnFormBuilder
                 declarationText += Environment.NewLine + File.ReadLines(decFile).ElementAt(i);
             }
 
-
             if (File.ReadLines(decFile).ElementAt(1) == "add")
             {
-                MessageBox.Show("We are adding");
                 string existingText = plcItemDec.DeclarationText;
                 plcItemDec.DeclarationText = existingText + declarationText;
             }
             else if (File.ReadLines(decFile).ElementAt(1) == "replace")
             {
-                MessageBox.Show("We are replacing");
                 plcItemDec.DeclarationText = declarationText;
             }
             else
             {
                 throw new ApplicationException("No valid add/replace method found in text file");
-            }
-            
+            }          
         }
     }
 }
