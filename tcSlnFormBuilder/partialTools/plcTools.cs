@@ -112,7 +112,19 @@ namespace tcSlnFormBuilder
             else
             {
                 throw new ApplicationException("No valid add/replace method found in text file");
-            }          
+            }
+        }
+        public void buildPlcProject()
+        {
+            String plcPath;
+            String solutionName;
+            solutionName = Path.GetFileNameWithoutExtension(SlnPath);
+            //solutionName = new FileInfo(SlnPath).Name;
+            plcPath = SlnFolder + @"\" + solutionName + @"\" + Plc.Child[1].Name + @"\" + Plc.Child[1].Name + @".plcproj";
+           
+
+            //plcPath = SlnPath
+            solution.SolutionBuild.BuildProject("Release|TwinCAT RT (x64)", plcPath, true);
         }
     }
 }

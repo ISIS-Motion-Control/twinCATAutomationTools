@@ -32,9 +32,7 @@ namespace tcSlnFormBuilder
             dte.SuppressUI = suppressUI;
             dte.UserControl = userControl;
             return dte;
-
         }
-
     }
 
 

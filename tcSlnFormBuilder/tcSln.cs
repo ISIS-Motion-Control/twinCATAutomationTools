@@ -200,6 +200,8 @@ namespace tcSlnFormBuilder
             saveAs(slnPath, slnName);
         }
 
+        
+
         /// <summary>
         /// Opens a given TwinCAT solution file
         /// </summary>
@@ -308,6 +310,18 @@ namespace tcSlnFormBuilder
 
         public void cleanUp()
         {
+            if (_systemManager == null)
+            {
+                solution = null;
+                Project = null;
+            }
+            try { SystemManager.IsTwinCATStarted(); }
+            catch {
+                solution = null;
+                Project = null;
+            }
+                
+            
             MessageFilter.Revoke();
         }
 
@@ -333,6 +347,11 @@ namespace tcSlnFormBuilder
             {
                 openSolution();
             }
+            else //check we have a message filter as using already open project
+            {
+                if (!MessageFilter.IsRegistered)
+                    MessageFilter.Register();
+            }
             
             //populate the "project" object
             grabSolutionProject();
@@ -349,7 +368,7 @@ namespace tcSlnFormBuilder
             dialogResult = MessageBox.Show(@"Connect to test crate." + Environment.NewLine + "Once connected press OK to confirm or cancel to exit the automated setup", "Time for a break", MessageBoxButtons.OKCancel);
             if(dialogResult == DialogResult.Cancel)
             {
-                MessageFilter.Revoke();
+                cleanUp();
                 return;
             }
             
@@ -415,12 +434,15 @@ namespace tcSlnFormBuilder
             //Add the plc "stuff"
             plcImportDeclarations();
 
+            //NEED INSTANCES
+            buildPlcProject();
+            
             //Map the variables
             importXmlMap();
-
+            
             try
             {
-                SystemManager.ActivateConfiguration();
+                //SystemManager.ActivateConfiguration();
             }
             catch
             {

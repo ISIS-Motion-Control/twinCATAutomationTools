@@ -25,6 +25,8 @@ namespace tcSlnFormBuilder
             Application.Run(new Form1(myTcSln));
         }
 
+
+        //Generic exception non-handling handler
         private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
             MessageBox.Show(e.Exception.Message);

@@ -198,8 +198,7 @@ namespace tcSlnFormBuilder
             {
                 throw new ApplicationException($"IO Xml file {xmlFile} could not be found.");
             }
-
-            
+           
             string deviceName = Path.GetFileNameWithoutExtension(xmlFile);
             ITcSmTreeItem currentIo = null;
 
