@@ -11,19 +11,12 @@ using EnvDTE;
 using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.VisualBasic;
+using System.Runtime.InteropServices;
 
 namespace tcSlnFormBuilder
 {
     public partial class tcSln
     {
-
-        //NOTES
-        //Next steps. Remove need for exceptions:
-        //tcSln
-        //ioTools
-        //mapTools
-        //ncTools
-        //plcTools
 
         //FIELDS
         private String _slnPath;    //Dir for new solution
@@ -247,6 +240,10 @@ namespace tcSlnFormBuilder
         /// </summary>
         public Project grabSolutionProject(int itemNum = 1)
         {
+            if (solution == null)
+            {
+                return null;
+            }
             try
             {
                 Project = solution.Projects.Item(itemNum);
@@ -325,6 +322,22 @@ namespace tcSlnFormBuilder
             MessageFilter.Revoke();
         }
 
+        /// <summary>
+        /// Setup directories in the configuration folder
+        /// </summary>
+        public void setupConfigFolder()
+        {
+            if (ConfigFolder == @"\Config")
+            {
+                MessageBox.Show("Config folder path empty");
+                return;
+            }
+            Directory.CreateDirectory(ConfigFolder + @"\axisXmls");
+            Directory.CreateDirectory(ConfigFolder + @"\deviceXmls");
+            Directory.CreateDirectory(ConfigFolder + @"\plc\declarations");
+        }
+
+
         public void setupTestCrate()
         {
             DialogResult dialogResult;
@@ -342,7 +355,7 @@ namespace tcSlnFormBuilder
                 return;
             }
 
-            //If no open project, load the selected on
+            //If no open project, load the selected one
             if (solution == null)
             {
                 openSolution();
@@ -354,7 +367,7 @@ namespace tcSlnFormBuilder
             }
             
             //populate the "project" object
-            grabSolutionProject();
+            Project = grabSolutionProject();
             //Check we successfully got the project
             if (Project == null)
             {
@@ -371,7 +384,10 @@ namespace tcSlnFormBuilder
                 cleanUp();
                 return;
             }
-            
+
+            //Set target platform, we are using TwinCAT RT (x64), PLC will not build if this does not match the build method argument later.
+            ITcConfigManager configManager = (ITcConfigManager)SystemManager.ConfigurationManager;
+            configManager.ActiveTargetPlatform = "TwinCAT RT (x64)";
 
 
             //Solution loaded and project loaded
@@ -404,10 +420,8 @@ namespace tcSlnFormBuilder
                     deleteAxes();
                 }
             }
-            //Add two new axes - should probably make a method accepting int input to create n axes
-            addNcAxis();
-            addNcAxis();
-
+            //Add axes equal to number of xml files in the NC folder
+            addNcAxes(getNcXmlCount());
 
             //Check whether the project already has IO in it and prompt user
             if (getIoCount() != 0)

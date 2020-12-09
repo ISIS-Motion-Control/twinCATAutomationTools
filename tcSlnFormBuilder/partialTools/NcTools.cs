@@ -14,18 +14,18 @@ using System.Net.Http.Headers;
 
 namespace tcSlnFormBuilder
 {
-    public partial class tcSln 
+    public partial class tcSln
     {
         private ITcSmTreeItem _ncConfig;
         private ITcSmTreeItem _axes;
         private String _axisDirectory = @"\axisXmls";
-        
+
 
         public ITcSmTreeItem NcConfig
         {
             get { return _ncConfig ?? (_ncConfig = SystemManager.LookupTreeItem("TINC")); }
             set { _ncConfig = value; }
-        }       
+        }
         public ITcSmTreeItem Axes
         {
             get { return _axes ?? (_axes = NcConfig.Child[1].LookupChild("Axes")); }
@@ -47,12 +47,31 @@ namespace tcSlnFormBuilder
             {
                 NcConfig.CreateChild("NC-Task 1", 1);
             }
-            catch 
+            catch
             {
-                throw new ApplicationException("Unable to create NC Task"); 
+                throw new ApplicationException("Unable to create NC Task");
             }
         }
-        
+
+        /// <summary>
+        /// Add 'nAxes' number of NC axes to the solution
+        /// </summary>
+        /// <param name="nAxes"></param>
+        /// <returns></returns>
+        public Boolean addNcAxes(int nAxes)
+        {
+            try
+            {
+                for (int i = 0; i < nAxes; i++)
+                {
+                    addNcAxis();
+                }
+                return true;
+            }
+            catch { return false; }
+        }
+
+
         /// <summary>
         /// Add single standard stepper axis to NC Task
         /// </summary>
@@ -64,14 +83,14 @@ namespace tcSlnFormBuilder
                 Axes.CreateChild("Axis " + (Axes.ChildCount + 1).ToString(), 1);
                 return true;
             }
-            catch { return false; }            
+            catch { return false; }
         }
-       
+
         /// <summary>
         /// Remove NC Task and all axes from solution
         /// </summary>
         /// <returns></returns>
-        public Boolean removeNcTask() 
+        public Boolean removeNcTask()
         {
             try
             {
@@ -81,6 +100,21 @@ namespace tcSlnFormBuilder
                 return true;
             }
             catch { return false; }
+        }
+
+        /// <summary>
+        /// Returns int of number of XML files in axis folder
+        /// </summary>
+        /// <returns></returns>
+        public int getNcXmlCount()
+        {
+            string axisFolder = ConfigFolder + AxisDirectory;
+            if (!Directory.Exists(axisFolder))
+            {
+                throw new ApplicationException($"Folder not found: {axisFolder}");
+            }
+
+            return Directory.GetFiles(axisFolder).Length;
         }
 
         /// <summary>
@@ -112,9 +146,9 @@ namespace tcSlnFormBuilder
             catch
             {
                 throw new ApplicationException($"Unable to consume xml for {axisName}");
-            }           
+            }
         }
-        
+
         /// <summary>
         /// For each xml file in axis directory folder, import parameters
         /// </summary>
@@ -125,13 +159,13 @@ namespace tcSlnFormBuilder
             {
                 throw new ApplicationException($"Folder not found: {axisFolder}");
             }
-            
+
             foreach (string file in Directory.GetFiles(axisFolder))
             {
                 ncAxisMapSearchConsume(file);
             }
         }
-          
+
         /// <summary>
         /// Set NC axis parameters
         /// </summary>
@@ -182,6 +216,22 @@ namespace tcSlnFormBuilder
                 }
 
             }
+        }
+
+
+        public void exportAllAxisXmls()
+        {
+            for (int i=0; i<getAxisCount(); i++)
+            {
+                exportAxisXml(i);
+            }
+        }
+        
+        public void exportAxisXml(int axisNumber)
+        {            
+            ITcSmTreeItem axisName = Axes.Child[axisNumber+1];
+            string xmlDescription = axisName.ProduceXml();
+            File.WriteAllText(ConfigFolder + @"\"+ AxisDirectory + @"\" + axisName.Name + @".xml", xmlDescription);
         }
     }
 }

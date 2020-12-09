@@ -121,8 +121,8 @@ namespace tcSlnFormBuilder
             solutionName = Path.GetFileNameWithoutExtension(SlnPath);
             //solutionName = new FileInfo(SlnPath).Name;
             plcPath = SlnFolder + @"\" + solutionName + @"\" + Plc.Child[1].Name + @"\" + Plc.Child[1].Name + @".plcproj";
-           
 
+            MessageBox.Show(plcPath);
             //plcPath = SlnPath
             solution.SolutionBuild.BuildProject("Release|TwinCAT RT (x64)", plcPath, true);
         }

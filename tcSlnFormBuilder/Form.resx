@@ -1566,6 +1566,31 @@
         4mksIAAAOw==
 </value>
   </data>
+  <data name="textBox1.Text" xml:space="preserve">
+    <value>To setup hardware:
+1. Click "Solution File" box and location .sln folder to open.
+2. Click "Config. Folder" box and locate configuration folder to apply.
+3. Click "Add configuration to solution" and follow the on screen prompts.
+4. Select "NO" if asked to restore any links.
+
+
+</value>
+  </data>
+  <data name="textBox2.Text" xml:space="preserve">
+    <value>To create configuration:
+1. Select location for the config folder.
+2. Setup folder
+3. Open solution
+4. Create mappings
+5. Clear mappings
+6. Export Axis XMLs
+7. Export IO XMLs
+8. ???Export Declarations for PLC???
+9. ???Export IO List???
+
+
+</value>
+  </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>90</value>
   </metadata>

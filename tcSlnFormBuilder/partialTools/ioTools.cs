@@ -16,6 +16,12 @@ namespace tcSlnFormBuilder
 {
     public partial class tcSln
     {
+        private String _ioDirectory = @"\deviceXmls";
+        public String IoDirectory
+        {
+            get { return _ioDirectory; }
+            set { _ioDirectory = value; }
+        }
         private String _ioFile = @"\io.xti";
         public String IoFile
         {
@@ -304,14 +310,51 @@ namespace tcSlnFormBuilder
                 
             }
         }
-        
-        //<NOT IMPLEMENTED>>
-        public void exportIoList()
-        { }
 
-        //<NOT IMPLEMENTED>
-        public void exportIoXmls()
-        { }
+        /// <summary>
+        /// Export all IO devices in solution to config folder
+        /// </summary>
+        public void exportAllIoXmls()
+        {
+            int tier1DeviceLayer;   //number of devices in IO tree
+            int tier2CouplerLayer; //number of couplers and terminals under a device
+            int tier3TerminalLayer; //number of terminals under a coupler
+            ITcSmTreeItem ioName;
+
+            tier1DeviceLayer = Io.ChildCount;
+            for (int i = 1; i<=tier1DeviceLayer; i++)
+            {
+                ioName = Io.Child[i];
+                exportIoXml(ioName);
+                tier2CouplerLayer = Io.Child[i].ChildCount;
+
+                for (int j =1; j<=tier2CouplerLayer; j++)
+                {
+                    ioName = Io.Child[i].Child[j];
+                    exportIoXml(ioName);
+                    tier3TerminalLayer = Io.Child[i].Child[j].ChildCount;
+                    //Iterate here
+                    
+                    for (int k = 1; k<=tier3TerminalLayer; k++)
+                    {
+                        ioName = Io.Child[i].Child[j].Child[k];
+                        exportIoXml(ioName);
+                    }
+                    //Then add child count to tier2
+                    j += tier3TerminalLayer;
+                }               
+            }
+        }
+
+        /// <summary>
+        /// Export an IO device XML file to the config directory
+        /// </summary>
+        /// <param name="ioName"></param>
+        public void exportIoXml(ITcSmTreeItem ioName)
+        {         
+            string xmlDescription = ioName.ProduceXml();
+            File.WriteAllText(ConfigFolder + @"\" + IoDirectory + @"\" + ioName.Name + @".xml", xmlDescription);
+        }
     }
 }
 
