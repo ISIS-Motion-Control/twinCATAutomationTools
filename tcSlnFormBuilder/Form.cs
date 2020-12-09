@@ -202,5 +202,20 @@ namespace tcSlnFormBuilder
         {
             mySln.exportAllIoXmls();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            mySln.exportIoList();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            mySln.exportPlcDec();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            mySln.createConfiguration();
+        }
     }
 }

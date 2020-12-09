@@ -355,6 +355,79 @@ namespace tcSlnFormBuilder
             string xmlDescription = ioName.ProduceXml();
             File.WriteAllText(ConfigFolder + @"\" + IoDirectory + @"\" + ioName.Name + @".xml", xmlDescription);
         }
+
+        /// <summary>
+        /// Export IO List to config directory
+        /// </summary>
+        public void exportIoList()
+        {
+            int tier1DeviceLayer;   //number of devices in IO tree
+            int tier2CouplerLayer; //number of couplers and terminals under a device
+            int tier3TerminalLayer; //number of terminals under a coupler
+            ITcSmTreeItem ioName;
+            List<string> ioList = new List<string>();
+
+            tier1DeviceLayer = Io.ChildCount;
+            for (int i = 1; i <= tier1DeviceLayer; i++)
+            {
+                ioName = Io.Child[i];
+                ioList.Add(getIoData("0", ioName));
+                tier2CouplerLayer = Io.Child[i].ChildCount;
+
+                for (int j = 1; j <= tier2CouplerLayer; j++)
+                {
+                    ioName = Io.Child[i].Child[j];
+                    ioList.Add(getIoData("1", ioName));
+                    tier3TerminalLayer = Io.Child[i].Child[j].ChildCount;
+
+                    for (int k = 1; k <= tier3TerminalLayer; k++)
+                    {
+                        ioName = Io.Child[i].Child[j].Child[k];
+                        ioList.Add(getIoData("2", ioName));
+                    }
+                    //Then add child count to tier2
+                    j += tier3TerminalLayer;
+                }
+            }
+            String path = ConfigFolder + @"\ioList.csv";
+            File.WriteAllLines(path, ioList.ToArray());
+        }
+
+        /// <summary>
+        /// Produces a string of data for use in the IO List file
+        /// </summary>
+        /// <param name="tierLevel"></param>
+        /// <param name="ioName"></param>
+        /// <returns></returns>
+        public String getIoData(String tierLevel, ITcSmTreeItem ioName)
+        {
+            //Need to get product revision from XML
+            XmlDocument ioXml = new XmlDocument();
+            ioXml.LoadXml(ioName.ProduceXml());
+            String productRevision;
+            String name;
+            String subType;
+            String strB4; //not utilised but needs to be set. Can be used to state where in tree the device should appear when created.
+            String ioListString;
+
+            name = ioName.Name;
+            subType = (ioName.ItemSubType).ToString();
+
+            var node = ioXml.SelectSingleNode("TreeItem/EtherCAT/Slave/Info/ProductRevision");
+            if (node != null)
+            {
+                strB4 = " ";
+                productRevision = node.InnerText;
+            }
+            else
+            {
+                strB4 = "null";
+                productRevision = "null";
+            }
+            ioListString = tierLevel + "," + name + "," + subType + "," + strB4 + "," + productRevision;
+            return ioListString;
+        }
+
     }
 }
 

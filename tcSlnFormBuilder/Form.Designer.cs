@@ -79,6 +79,7 @@
             this.button4 = new System.Windows.Forms.Button();
             this.panel5 = new System.Windows.Forms.Panel();
             this.label6 = new System.Windows.Forms.Label();
+            this.button2 = new System.Windows.Forms.Button();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
@@ -337,11 +338,11 @@
             // textBox1
             // 
             this.textBox1.Enabled = false;
-            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox1.Location = new System.Drawing.Point(1025, 419);
+            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox1.Location = new System.Drawing.Point(1025, 225);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(726, 244);
+            this.textBox1.Size = new System.Drawing.Size(726, 125);
             this.textBox1.TabIndex = 42;
             this.textBox1.Text = resources.GetString("textBox1.Text");
             // 
@@ -517,11 +518,11 @@
             // textBox2
             // 
             this.textBox2.Enabled = false;
-            this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox2.Location = new System.Drawing.Point(1025, 689);
+            this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox2.Location = new System.Drawing.Point(1025, 387);
             this.textBox2.Multiline = true;
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(726, 310);
+            this.textBox2.Size = new System.Drawing.Size(726, 594);
             this.textBox2.TabIndex = 55;
             this.textBox2.Text = resources.GetString("textBox2.Text");
             // 
@@ -569,14 +570,15 @@
             // 
             this.button1.BackColor = System.Drawing.Color.LightCoral;
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(20, 273);
+            this.button1.Location = new System.Drawing.Point(20, 217);
             this.button1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(178, 46);
             this.button1.TabIndex = 54;
-            this.button1.Text = "Export IO List?";
+            this.button1.Text = "Export IO List";
             this.button1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // label5
             // 
@@ -636,7 +638,7 @@
             // 
             this.button4.BackColor = System.Drawing.Color.LightCoral;
             this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button4.Location = new System.Drawing.Point(20, 217);
+            this.button4.Location = new System.Drawing.Point(20, 273);
             this.button4.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(178, 46);
@@ -644,6 +646,7 @@
             this.button4.Text = "PLC Declarations";
             this.button4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.button4.UseVisualStyleBackColor = false;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // panel5
             // 
@@ -672,6 +675,17 @@
             this.label6.Text = "IO TOOLS";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(1302, 58);
+            this.button2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(254, 130);
+            this.button2.TabIndex = 56;
+            this.button2.Text = "Create Configuration";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -679,6 +693,7 @@
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.ClientSize = new System.Drawing.Size(1776, 1062);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel3);
@@ -766,6 +781,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button button2;
     }
 }
 

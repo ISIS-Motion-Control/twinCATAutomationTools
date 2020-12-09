@@ -467,6 +467,34 @@ namespace tcSlnFormBuilder
             MessageBox.Show("Success!");
         }
        
+        public void createConfiguration()
+        {
+            //CHECK CONFIG NOT EMPTY FIRST!!!
+            if (ConfigFolder == @"\Config")
+            {
+                MessageBox.Show("You have not selected a configuration folder location", "Oopsie", MessageBoxButtons.OK);
+                return;
+            }
+
+            //If no open project, load the selected one
+            if (solution == null)
+            {
+                MessageBox.Show("Please open the solution first", "Oopsie", MessageBoxButtons.OK);
+                return;
+            }
+            if (!MessageFilter.IsRegistered)
+                MessageFilter.Register();
+
+            setupConfigFolder();
+            exportXmlMap();
+            clearMap();
+            exportAllAxisXmls();
+            exportAllIoXmls();
+            exportIoList();
+            exportPlcDec();
+            cleanUp();
+            MessageBox.Show("Export complete."+Environment.NewLine + "Please ensure to update MAIN declaration file", "Configuration export", MessageBoxButtons.OK);
+        }
 
     }
 }

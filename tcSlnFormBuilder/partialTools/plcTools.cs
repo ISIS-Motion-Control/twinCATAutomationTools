@@ -126,5 +126,40 @@ namespace tcSlnFormBuilder
             //plcPath = SlnPath
             solution.SolutionBuild.BuildProject("Release|TwinCAT RT (x64)", plcPath, true);
         }
+
+        public void exportPlcDec()
+        {
+            //Create two files for GVL and MAIN. 
+            //GVL will be an actual copy of project GVL
+            //Main will just be a template file
+            String path = ConfigFolder + PlcDirectory + DecDirectory;
+            String fileName = @"\mainDeclation.txt";
+
+            String declaration = "tc_project_app^tc_project_app Project^POUs^MAIN" + Environment.NewLine + "add";
+
+            File.WriteAllText(path+ fileName, declaration);
+
+            fileName = @"\gvlAppDeclaration.txt";
+            ITcSmTreeItem plcItem;
+            try
+            {
+                plcItem = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^GVLs^GVL_APP");
+            }
+            catch
+            {
+                throw new ApplicationException($"Unable to find item GVL_APP");
+            }
+            ITcPlcDeclaration plcItemDec;
+            try
+            {
+                plcItemDec = (ITcPlcDeclaration)plcItem;
+            }
+            catch
+            {
+                throw new ApplicationException($"Unable to create declaration field for item GVL_APP");
+            }
+            declaration = "tc_project_app^tc_project_app Project^GVLs^GVL_APP" + Environment.NewLine + "replace" + Environment.NewLine + plcItemDec.DeclarationText;
+            File.WriteAllText(path + fileName, declaration);
+        }
     }
 }
