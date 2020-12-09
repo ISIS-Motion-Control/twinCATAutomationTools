@@ -1566,6 +1566,51 @@
         4mksIAAAOw==
 </value>
   </data>
+  <data name="textBox1.Text" xml:space="preserve">
+    <value>To setup hardware:
+1. Click "Solution File" box and location .sln folder to open.
+2. Click "Config. Folder" box and locate configuration folder to apply.
+3. Click "Add configuration to solution" and follow the on screen prompts.
+4. Select "NO" if asked to restore any links.
+
+
+</value>
+  </data>
+  <data name="textBox2.Text" xml:space="preserve">
+    <value>To create configuration:
+1. Select location for the config folder.
+2. Setup folder
+3. Open solution
+4. Create mappings
+5. Clear mappings
+6. Export Axis XMLs
+7. Export IO XMLs
+8. Export IO List
+9. Export Declarations for PLC
+
+
+*NOTE* 
+The current PLC export will create a replacement declartion for GVL.
+For the main, it will create an "appended" line file but it will be empty other than some header data and will need to be manually populated.
+The limitation on this is not knowing what the "default" main declaration looks like as this could change between versions whereas GVL is (for now) very static.
+I only use the main for creation and setting of vars for powering limits.
+Example document:
+tc_project_app^tc_project_app Project^POUs^MAIN
+add
+VAR
+    bEnableAxis1Limits AT %Q*: BOOL:=TRUE;
+    bEnableAxis2Limits AT %Q*: BOOL:=TRUE;
+    bEnableAxis1Enc AT %Q*: BOOL:=TRUE;
+    bEnableAxis2Enc AT %Q*: BOOL:=TRUE;
+END_VAR
+
+
+
+</value>
+  </data>
+  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>90</value>
+  </metadata>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAEAAAAAAAEAIAAqVQAAFgAAAIlQTkcNChoKAAAADUlIRFIAAAEAAAABAAgGAAAAXHKoZgAAVPFJ

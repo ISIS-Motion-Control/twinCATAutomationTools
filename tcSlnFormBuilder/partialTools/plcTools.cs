@@ -11,28 +11,12 @@ using System.IO;
 
 namespace tcSlnFormBuilder
 {
-    /*PLC TOOLS
-     *Ideas:  
-     * adding declaration area variables
-     * adding *?* area code
-     * 
-     */
     public partial class tcSln
     {
-
-        private ITcSmTreeItem _plcPou;
         private ITcSmTreeItem _plc;
-        private ITcSmTreeItem _plcMain;
-        private ITcSmTreeItem _plcGvlApp;
-        private String _mainDecFile = @"\mainDeclaration.txt";
-        private String _gvlAppDecFile = @"\gvlAppDeclaration.txt";
         private String _plcDirectory = @"\plc";
+        private String _decDirectory = @"\declarations";
 
-        public ITcSmTreeItem PlcPou
-        {
-            get { return _plcPou ?? (_plcPou = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^POUs^MAIN")); }
-            set { _plcPou = value; }
-        }
 
         public ITcSmTreeItem Plc
         {
@@ -40,81 +24,142 @@ namespace tcSlnFormBuilder
             set { _plc = value; }
         }
 
-        public ITcSmTreeItem PlcMain
-        {
-            //get { return _plcMain; }
-            get { return _plcMain ?? (_plcMain = SystemManager.LookupTreeItem("TIPC^" + Plc.Child[1].Name + "^" + Plc.Child[1].Name + " Project^POUs^MAIN")); }
-            set { _plcMain = value; }
-        }
 
-        public ITcSmTreeItem PlcGvlApp
-        {
-            get { return _plcGvlApp ?? (_plcGvlApp = SystemManager.LookupTreeItem("TIPC^" + Plc.Child[1].Name + "^" + Plc.Child[1].Name + " Project^GVLs^GVL_APP")); }
-            set { _plcGvlApp = value; }
-        }
-
-        private String MainDecFile
-        {
-            get { return _mainDecFile; }
-            set { _mainDecFile = value; }
-        }
-        private String GvlAppDecFile
-        {
-            get { return _gvlAppDecFile; }
-            set { _gvlAppDecFile = value; }
-        }
-
-        private String PlcDirectory
+        public String PlcDirectory
         {
             get { return _plcDirectory; }
             set { _plcDirectory = value; }
+        }        
+        public String DecDirectory
+        {
+            get { return _decDirectory; }
+            set { _decDirectory = value; }
         }
-
-        public int plcItemCount()
+        
+        /// <summary>
+        /// Return count of PLC projects in solution
+        /// </summary>
+        /// <returns></returns>
+        public int plcCount()
         {
             MessageBox.Show(Plc.ChildCount.ToString());
             return Plc.ChildCount;
         }
-        
-        
-        public void plcAddMainDeclaration()
+     
+        /// <summary>
+        /// Run through each file in declarations folder and import to solution
+        /// </summary>
+        public void plcImportDeclarations()
         {
-
-            //PlcMain = SystemManager.LookupTreeItem("TIPC^" + Plc.Child[1].Name + "^" + Plc.Child[1].Name + " Project^POUs^MAIN");
-            ITcPlcPou mainPou = (ITcPlcPou)PlcMain;
-             ITcPlcDeclaration mainPouDec = (ITcPlcDeclaration)mainPou;
-             String declarationText = mainPouDec.DeclarationText;
-             String newDecText;
-             //Need to change this to add from /plc/mainDeclaration now
-             try
-             {
-                 newDecText = File.ReadAllText(ConfigFolder + PlcDirectory + MainDecFile);
-             }
-             catch
-             {
-                 throw new ApplicationException("Could not find Main Declaration file");
-             }
-
-
-             declarationText = declarationText + Environment.NewLine + newDecText;
-             mainPouDec.DeclarationText = declarationText;
-             
+            string directoryPath = ConfigFolder + PlcDirectory + DecDirectory;
+            if (!Directory.Exists(directoryPath))
+            {
+                throw new ApplicationException($"Folder not found {directoryPath}");
+            }
+            foreach (string file in Directory.GetFiles(directoryPath))
+            {
+                modifyDeclaration(file);
+            }
         }
-
-        public void plcNewGvlAppDeclaration()
+        
+        /// <summary>
+        /// Import declaration file
+        /// </summary>
+        /// <param name="decFile"></param>
+        public void modifyDeclaration(string decFile)
         {
-            ITcPlcDeclaration gvlAppDec = (ITcPlcDeclaration)PlcGvlApp;
-            String newDecText;
+            //check file exists
+            if (!File.Exists(decFile))
+            {
+                throw new ApplicationException($"PLC file {decFile} could not be found.");
+            }
+            string plcItemName = File.ReadLines(decFile).First();
+            ITcSmTreeItem plcItem;
             try
             {
-                newDecText = File.ReadAllText(ConfigFolder + PlcDirectory + GvlAppDecFile);
+                plcItem = SystemManager.LookupTreeItem("TIPC^" + plcItemName);
             }
             catch
             {
-                throw new ApplicationException("Could not find GVL_App declaration file");
+                throw new ApplicationException($"Unable to find item {plcItemName}");
             }
-            gvlAppDec.DeclarationText = newDecText;
-            //gvlAppDec.DeclarationText= "{attribute 'qualified_only'}" + Environment.NewLine + "VAR_GLOBAL" + Environment.NewLine + Environment.NewLine + "END_VAR" + Environment.NewLine + Environment.NewLine + "VAR_GLOBAL CONSTANT" + Environment.NewLine + "    nAXIS_NUM : UINT:=2;" + Environment.NewLine + "END_VAR";
+            ITcPlcDeclaration plcItemDec;
+            try
+            {
+                plcItemDec = (ITcPlcDeclaration)plcItem;
+            }
+            catch
+            {
+                throw new ApplicationException($"Unable to create declaration field for item {plcItemName}");
+            }
+
+            string declarationText = "";
+            int lineCount = File.ReadLines(decFile).Count();
+            for (int i = 2; i < lineCount; i++)
+            {
+                declarationText += Environment.NewLine + File.ReadLines(decFile).ElementAt(i);
+            }
+
+            if (File.ReadLines(decFile).ElementAt(1) == "add")
+            {
+                string existingText = plcItemDec.DeclarationText;
+                plcItemDec.DeclarationText = existingText + declarationText;
+            }
+            else if (File.ReadLines(decFile).ElementAt(1) == "replace")
+            {
+                plcItemDec.DeclarationText = declarationText;
+            }
+            else
+            {
+                throw new ApplicationException("No valid add/replace method found in text file");
+            }
+        }
+        public void buildPlcProject()
+        {
+            String plcPath;
+            String solutionName;
+            solutionName = Path.GetFileNameWithoutExtension(SlnPath);
+            //solutionName = new FileInfo(SlnPath).Name;
+            plcPath = SlnFolder + @"\" + solutionName + @"\" + Plc.Child[1].Name + @"\" + Plc.Child[1].Name + @".plcproj";
+
+            MessageBox.Show(plcPath);
+            //plcPath = SlnPath
+            solution.SolutionBuild.BuildProject("Release|TwinCAT RT (x64)", plcPath, true);
+        }
+
+        public void exportPlcDec()
+        {
+            //Create two files for GVL and MAIN. 
+            //GVL will be an actual copy of project GVL
+            //Main will just be a template file
+            String path = ConfigFolder + PlcDirectory + DecDirectory;
+            String fileName = @"\mainDeclation.txt";
+
+            String declaration = "tc_project_app^tc_project_app Project^POUs^MAIN" + Environment.NewLine + "add";
+
+            File.WriteAllText(path+ fileName, declaration);
+
+            fileName = @"\gvlAppDeclaration.txt";
+            ITcSmTreeItem plcItem;
+            try
+            {
+                plcItem = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^GVLs^GVL_APP");
+            }
+            catch
+            {
+                throw new ApplicationException($"Unable to find item GVL_APP");
+            }
+            ITcPlcDeclaration plcItemDec;
+            try
+            {
+                plcItemDec = (ITcPlcDeclaration)plcItem;
+            }
+            catch
+            {
+                throw new ApplicationException($"Unable to create declaration field for item GVL_APP");
+            }
+            declaration = "tc_project_app^tc_project_app Project^GVLs^GVL_APP" + Environment.NewLine + "replace" + Environment.NewLine + plcItemDec.DeclarationText;
+            File.WriteAllText(path + fileName, declaration);
         }
     }
 }

@@ -39,7 +39,6 @@ namespace tcSlnFormBuilder
                     return VSVersion.VS_2019.DTEDesc;
                 case "TWINCAT_SHELL":
                     return VSVersion.TWINCAT_SHELL.DTEDesc;
-
                 default:
                     return VSVersion.TWINCAT_SHELL.DTEDesc;
             }

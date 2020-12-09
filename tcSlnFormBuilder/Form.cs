@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -118,7 +119,16 @@ namespace tcSlnFormBuilder
         //Use config folder in solution directory
         private void buttonCopySolutionDir_Click(object sender, EventArgs e)
         {
-            configFolderSelect.Text = mySln.SlnFolder + @"\Config";
+            if (solutionFileSelect.Text == "")
+            { return; }
+            if (mySln.SlnFolder == "")
+            {             
+                configFolderSelect.Text = Path.GetDirectoryName(solutionFileSelect.Text) + @"\Config";
+            }
+            else
+            {
+                configFolderSelect.Text = mySln.SlnFolder + @"\Config";
+            }         
             mySln.ConfigFolder = configFolderSelect.Text;
         }
 
@@ -161,8 +171,51 @@ namespace tcSlnFormBuilder
 
         private void buttonTesting_Click(object sender, EventArgs e)
         {
-            mySln.plcAddMainDeclaration();
+            //mySln.plcAddMainDeclaration();
             //mySln.plcNewGvlAppDeclaration();
+            //mySln.modifyDeclaration(@"C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\twinCATAutomationTools\Config Folder\plc\mainDeclaration.txt");
+            mySln.plcImportDeclarations();
+        }
+
+        private void toolStripComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            mySln.versionString = toolStripComboBox1.Text;
+            MessageBox.Show(mySln.versionString);
+        }
+
+        private void butCreateConfigDir_Click(object sender, EventArgs e)
+        {
+            mySln.setupConfigFolder();
+        }
+
+        private void butAxisXmlExport_Click(object sender, EventArgs e)
+        {
+            mySln.exportAllAxisXmls();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            mySln.exportAllIoXmls();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            mySln.exportIoList();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            mySln.exportPlcDec();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            mySln.createConfiguration();
         }
     }
 }

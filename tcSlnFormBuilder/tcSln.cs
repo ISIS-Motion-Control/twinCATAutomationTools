@@ -11,6 +11,7 @@ using EnvDTE;
 using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.VisualBasic;
+using System.Runtime.InteropServices;
 
 namespace tcSlnFormBuilder
 {
@@ -36,6 +37,7 @@ namespace tcSlnFormBuilder
         public String xmlFolderPath;
         
         public VSVersion version = VSVersion.TWINCAT_SHELL;
+        public String versionString = "TWINCAT_SHELL";
 
         public tcSln()
         {
@@ -191,6 +193,8 @@ namespace tcSlnFormBuilder
             saveAs(slnPath, slnName);
         }
 
+        
+
         /// <summary>
         /// Opens a given TwinCAT solution file
         /// </summary>
@@ -200,7 +204,7 @@ namespace tcSlnFormBuilder
         {
             try
             {
-                solution = quickSetupDTE();
+                solution = setupDTE(versionString, true, false, true);
                 solution.Open(SlnPath);
                 SlnFolder = new FileInfo(SlnPath).Directory.FullName;
                 return solution;
@@ -236,6 +240,10 @@ namespace tcSlnFormBuilder
         /// </summary>
         public Project grabSolutionProject(int itemNum = 1)
         {
+            if (solution == null)
+            {
+                return null;
+            }
             try
             {
                 Project = solution.Projects.Item(itemNum);
@@ -299,23 +307,36 @@ namespace tcSlnFormBuilder
 
         public void cleanUp()
         {
+            if (_systemManager == null)
+            {
+                solution = null;
+                Project = null;
+            }
+            try { SystemManager.IsTwinCATStarted(); }
+            catch {
+                solution = null;
+                Project = null;
+            }
+                
+            
             MessageFilter.Revoke();
         }
 
-
-
-        public void importHardwareXTI(string xtiFile = @"C:\Users\SCooper - work\Documents\Git Repos\TEST CRATE HARDWARE\ Device 1 (EtherCAT).xti")
+        /// <summary>
+        /// Setup directories in the configuration folder
+        /// </summary>
+        public void setupConfigFolder()
         {
-            try
+            if (ConfigFolder == @"\Config")
             {
-                ITcSmTreeItem io = SystemManager.LookupTreeItem("TIID");
-                io.ImportChild(xtiFile);
+                MessageBox.Show("Config folder path empty");
+                return;
             }
-            catch
-            {
-                throw new ApplicationException($"Unable to import hardware");
-            }
+            Directory.CreateDirectory(ConfigFolder + @"\axisXmls");
+            Directory.CreateDirectory(ConfigFolder + @"\deviceXmls");
+            Directory.CreateDirectory(ConfigFolder + @"\plc\declarations");
         }
+
 
         public void setupTestCrate()
         {
@@ -334,14 +355,19 @@ namespace tcSlnFormBuilder
                 return;
             }
 
-            //If no open project, load the selected on
+            //If no open project, load the selected one
             if (solution == null)
             {
                 openSolution();
             }
+            else //check we have a message filter as using already open project
+            {
+                if (!MessageFilter.IsRegistered)
+                    MessageFilter.Register();
+            }
             
             //populate the "project" object
-            grabSolutionProject();
+            Project = grabSolutionProject();
             //Check we successfully got the project
             if (Project == null)
             {
@@ -355,10 +381,13 @@ namespace tcSlnFormBuilder
             dialogResult = MessageBox.Show(@"Connect to test crate." + Environment.NewLine + "Once connected press OK to confirm or cancel to exit the automated setup", "Time for a break", MessageBoxButtons.OKCancel);
             if(dialogResult == DialogResult.Cancel)
             {
-                MessageFilter.Revoke();
+                cleanUp();
                 return;
             }
-            
+
+            //Set target platform, we are using TwinCAT RT (x64), PLC will not build if this does not match the build method argument later.
+            ITcConfigManager configManager = (ITcConfigManager)SystemManager.ConfigurationManager;
+            configManager.ActiveTargetPlatform = "TwinCAT RT (x64)";
 
 
             //Solution loaded and project loaded
@@ -391,10 +420,8 @@ namespace tcSlnFormBuilder
                     deleteAxes();
                 }
             }
-            //Add two new axes - should probably make a method accepting int input to create n axes
-            addNcAxis();
-            addNcAxis();
-
+            //Add axes equal to number of xml files in the NC folder
+            addNcAxes(getNcXmlCount());
 
             //Check whether the project already has IO in it and prompt user
             if (getIoCount() != 0)
@@ -419,15 +446,17 @@ namespace tcSlnFormBuilder
             ncConsumeAllMaps();
 
             //Add the plc "stuff"
-            plcAddMainDeclaration();
-            plcNewGvlAppDeclaration();
+            plcImportDeclarations();
 
+            //NEED INSTANCES
+            buildPlcProject();
+            
             //Map the variables
             importXmlMap();
-
+            
             try
             {
-                SystemManager.ActivateConfiguration();
+                //SystemManager.ActivateConfiguration();
             }
             catch
             {
@@ -438,6 +467,35 @@ namespace tcSlnFormBuilder
             MessageBox.Show("Success!");
         }
        
+        public void createConfiguration()
+        {
+            //CHECK CONFIG NOT EMPTY FIRST!!!
+            if (ConfigFolder == @"\Config")
+            {
+                MessageBox.Show("You have not selected a configuration folder location", "Oopsie", MessageBoxButtons.OK);
+                return;
+            }
+
+            //If no open project, load the selected one
+            if (solution == null)
+            {
+                MessageBox.Show("Please open the solution first", "Oopsie", MessageBoxButtons.OK);
+                return;
+            }
+            if (!MessageFilter.IsRegistered)
+                MessageFilter.Register();
+
+            setupConfigFolder();
+            exportXmlMap();
+            clearMap();
+            exportAllAxisXmls();
+            exportAllIoXmls();
+            exportIoList();
+            exportPlcDec();
+            cleanUp();
+            MessageBox.Show("Export complete."+Environment.NewLine + "Please ensure to update MAIN declaration file", "Configuration export", MessageBoxButtons.OK);
+        }
+
     }
 }
 
