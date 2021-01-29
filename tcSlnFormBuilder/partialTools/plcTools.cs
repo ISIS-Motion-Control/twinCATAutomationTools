@@ -16,6 +16,9 @@ namespace tcSlnFormBuilder
         private ITcSmTreeItem _plc;
         private String _plcDirectory = @"\plc";
         private String _decDirectory = @"\declarations";
+        private String _impDirectory = @"\implementations";
+        private String _axesDirectory = @"\axes";
+        private String _appDirectory = @"\applications";
 
 
         public ITcSmTreeItem Plc
@@ -23,7 +26,6 @@ namespace tcSlnFormBuilder
             get { return _plc ?? (_plc = SystemManager.LookupTreeItem("TIPC")); }
             set { _plc = value; }
         }
-
 
         public String PlcDirectory
         {
@@ -35,7 +37,22 @@ namespace tcSlnFormBuilder
             get { return _decDirectory; }
             set { _decDirectory = value; }
         }
-        
+        public String ImpDirectory
+        {
+            get { return _impDirectory; }
+            set { _impDirectory = value; }
+        }
+        public String AxesDirectory
+        {
+            get { return _axesDirectory; }
+            set { _axesDirectory = value; }
+        }
+        public String AppDirectory
+        {
+            get { return _appDirectory; }
+            set { _appDirectory = value; }
+        }
+
         /// <summary>
         /// Return count of PLC projects in solution
         /// </summary>
@@ -160,6 +177,161 @@ namespace tcSlnFormBuilder
             }
             declaration = "tc_project_app^tc_project_app Project^GVLs^GVL_APP" + Environment.NewLine + "replace" + Environment.NewLine + plcItemDec.DeclarationText;
             File.WriteAllText(path + fileName, declaration);
+        }
+
+        public void exportAxes()
+        {
+            String path = ConfigFolder + PlcDirectory + AxesDirectory;
+            if (Directory.Exists(path)==false)
+            {
+                Directory.CreateDirectory(ConfigFolder + @"\plc\axes");
+            }
+            String axesFolder = SlnFolder + @"\solution\tc_project_app\POUs\Application Specific\Axes";
+            foreach(string file in Directory.GetFiles(path))
+            {
+                File.Delete(file);
+            }
+
+            foreach (string filePath in Directory.GetFiles(axesFolder))
+                {File.Copy(filePath, filePath.Replace(axesFolder, path)); }
+
+        }
+        public void importAxes()
+        {
+            String path = ConfigFolder + PlcDirectory + AxesDirectory;
+            String axesFolder = SlnFolder + @"\solution\tc_project_app\POUs\Application Specific\Axes";
+            ITcSmTreeItem plcItem;
+            try
+            {
+                plcItem = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^POUs^Application Specific^Axes");
+            }
+            catch
+            {
+                throw new ApplicationException($"Unable to find Axes Application Specific directory in solution");
+            }
+            //Clear the folder in the solution explorer
+            if (plcItem.ChildCount !=0)
+            {
+                while(plcItem.ChildCount!=0)
+                {
+                    try
+                    {
+                        plcItem.DeleteChild(plcItem.Child[1].Name);
+                    }
+                    catch
+                    {
+                        throw new ApplicationException("Unable to delete PLC Item");
+                    }
+                }
+            }
+            //Import all the items
+            foreach (string filePath in Directory.GetFiles(path))
+            {
+                
+                plcItem.CreateChild(Path.GetFileNameWithoutExtension(filePath), 58, null, filePath);
+            }
+        }
+
+
+        public void exportApplications()
+        {
+            String path = ConfigFolder + PlcDirectory + AppDirectory;
+            if (Directory.Exists(path) == false)
+            {
+                Directory.CreateDirectory(ConfigFolder + @"\plc\applications");
+            }
+            String appsFolder = SlnFolder + @"\solution\tc_project_app\POUs\Application Specific\Applications";
+            foreach (string file in Directory.GetFiles(path))
+            {
+                File.Delete(file);
+            }
+            foreach (string filePath in Directory.GetFiles(appsFolder))
+            { File.Copy(filePath, filePath.Replace(appsFolder, path)); }
+        }
+
+        public void importApplications()
+        {
+            String path = ConfigFolder + PlcDirectory + AppDirectory;
+            String axesFolder = SlnFolder + @"\solution\tc_project_app\POUs\Application Specific\Applications";
+            ITcSmTreeItem plcItem;
+            try
+            {
+                plcItem = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^POUs^Application Specific^Applications");
+            }
+            catch
+            {
+                throw new ApplicationException($"Unable to find Axes Application Specific directory in solution");
+            }
+            //Clear the folder in the solution explorer
+            if (plcItem.ChildCount != 0)
+            {
+                while (plcItem.ChildCount != 0)
+                {
+                    try
+                    {
+                        MessageBox.Show(plcItem.ChildCount.ToString());
+                        MessageBox.Show(plcItem.Child[1].Name);
+                        plcItem.DeleteChild(plcItem.Child[1].Name);
+                    }
+                    catch
+                    {
+                        throw new ApplicationException("Unable to delete PLC Item");
+                    }
+                }
+            }
+            //Import all the items
+            foreach (string filePath in Directory.GetFiles(path))
+            {
+                plcItem.CreateChild(Path.GetFileNameWithoutExtension(filePath), 58, null, filePath);
+            }
+        }
+
+        public void setupProgAction()
+        {
+            ITcSmTreeItem plcItem;
+            try
+            {
+                plcItem = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^POUs^MAIN^PROG");
+            }
+            catch
+            {
+                throw new ApplicationException($"Unable to find PROG action in solution");
+            }
+            ITcPlcImplementation plcImp;
+            plcImp = (ITcPlcImplementation)plcItem;
+
+            //Need to build up the string
+            string impText ="";
+            //Axes first
+            ITcSmTreeItem axesPlcItem;
+            try
+            {
+                axesPlcItem = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^POUs^Application Specific^Axes");
+            }
+            catch
+            {
+                throw new ApplicationException($"Couldn't find axes folder");
+            }
+            for (int i = 1; i < axesPlcItem.ChildCount + 1; i++)
+            {
+                impText +=  axesPlcItem.Child[i].Name + @"();" + Environment.NewLine;
+            }
+            //Now Applications
+            ITcSmTreeItem appsPlcItem;
+            try
+            {
+                appsPlcItem = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^POUs^Application Specific^Applications");
+            }
+            catch
+            {
+                throw new ApplicationException($"Couldn't find applications folder");
+            }
+            for (int i = 1; i < appsPlcItem.ChildCount + 1; i++)
+            {
+                impText += appsPlcItem.Child[i].Name + @"();" + Environment.NewLine;
+            }
+            plcImp.ImplementationText = impText;
+
         }
     }
 }

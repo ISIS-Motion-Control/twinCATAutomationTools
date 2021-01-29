@@ -335,6 +335,9 @@ namespace tcSlnFormBuilder
             Directory.CreateDirectory(ConfigFolder + @"\axisXmls");
             Directory.CreateDirectory(ConfigFolder + @"\deviceXmls");
             Directory.CreateDirectory(ConfigFolder + @"\plc\declarations");
+            Directory.CreateDirectory(ConfigFolder + @"\plc\implementations");
+            Directory.CreateDirectory(ConfigFolder + @"\plc\axes");
+            Directory.CreateDirectory(ConfigFolder + @"\plc\applications");
         }
 
 
@@ -448,6 +451,11 @@ namespace tcSlnFormBuilder
             //Add the plc "stuff"
             plcImportDeclarations();
 
+            //New PLC "stuff" to add
+            importAxes();
+            importApplications();
+            setupProgAction();
+
             //NEED INSTANCES
             buildPlcProject();
             
@@ -492,6 +500,8 @@ namespace tcSlnFormBuilder
             exportAllIoXmls();
             exportIoList();
             exportPlcDec();
+            exportAxes();
+            exportApplications();
             cleanUp();
             MessageBox.Show("Export complete."+Environment.NewLine + "Please ensure to update MAIN declaration file", "Configuration export", MessageBoxButtons.OK);
         }
