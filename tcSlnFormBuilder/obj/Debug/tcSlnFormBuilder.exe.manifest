@@ -43,14 +43,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="tcSlnFormBuilder.exe" size="191512">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="tcSlnFormBuilder.exe" size="192008">
       <assemblyIdentity name="tcSlnFormBuilder" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>HGEBnkrLT/p53W1q6MOCkrRyhlvHjSuatFaSrn/p22U=</dsig:DigestValue>
+        <dsig:DigestValue>eaJuk281Y1BQrbRJBsC6BGM7/imqXwV7XMMR6TdRVXQ=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

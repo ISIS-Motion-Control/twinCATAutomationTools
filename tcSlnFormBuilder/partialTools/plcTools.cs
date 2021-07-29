@@ -59,7 +59,6 @@ namespace tcSlnFormBuilder
         /// <returns></returns>
         public int plcCount()
         {
-            MessageBox.Show(Plc.ChildCount.ToString());
             return Plc.ChildCount;
         }
      
@@ -138,9 +137,6 @@ namespace tcSlnFormBuilder
             solutionName = Path.GetFileNameWithoutExtension(SlnPath);
             //solutionName = new FileInfo(SlnPath).Name;
             plcPath = SlnFolder + @"\" + solutionName + @"\" + Plc.Child[1].Name + @"\" + Plc.Child[1].Name + @".plcproj";
-
-            MessageBox.Show(plcPath);
-            //plcPath = SlnPath
             solution.SolutionBuild.BuildProject("Release|TwinCAT RT (x64)", plcPath, true);
         }
 
@@ -186,7 +182,7 @@ namespace tcSlnFormBuilder
             {
                 Directory.CreateDirectory(ConfigFolder + @"\plc\axes");
             }
-            String axesFolder = SlnFolder + @"\solution\tc_project_app\POUs\Application Specific\Axes";
+            String axesFolder = SlnFolder + @"\solution\tc_project_app\POUs\Application_Specific\Axes";
             foreach(string file in Directory.GetFiles(path))
             {
                 File.Delete(file);
@@ -199,11 +195,11 @@ namespace tcSlnFormBuilder
         public void importAxes()
         {
             String path = ConfigFolder + PlcDirectory + AxesDirectory;
-            String axesFolder = SlnFolder + @"\solution\tc_project_app\POUs\Application Specific\Axes";
+            String axesFolder = SlnFolder + @"\solution\tc_project_app\POUs\Application_Specific\Axes";
             ITcSmTreeItem plcItem;
             try
             {
-                plcItem = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^POUs^Application Specific^Axes");
+                plcItem = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^POUs^Application_Specific^Axes");
             }
             catch
             {
@@ -220,7 +216,7 @@ namespace tcSlnFormBuilder
                     }
                     catch
                     {
-                        throw new ApplicationException("Unable to delete PLC Item");
+                        throw new ApplicationException("Unable to delete Axis PLC Item");
                     }
                 }
             }
@@ -240,7 +236,7 @@ namespace tcSlnFormBuilder
             {
                 Directory.CreateDirectory(ConfigFolder + @"\plc\applications");
             }
-            String appsFolder = SlnFolder + @"\solution\tc_project_app\POUs\Application Specific\Applications";
+            String appsFolder = SlnFolder + @"\solution\tc_project_app\POUs\Application_Specific\Applications";
             foreach (string file in Directory.GetFiles(path))
             {
                 File.Delete(file);
@@ -252,15 +248,15 @@ namespace tcSlnFormBuilder
         public void importApplications()
         {
             String path = ConfigFolder + PlcDirectory + AppDirectory;
-            String axesFolder = SlnFolder + @"\solution\tc_project_app\POUs\Application Specific\Applications";
+            String axesFolder = SlnFolder + @"\solution\tc_project_app\POUs\Application_Specific\Applications";
             ITcSmTreeItem plcItem;
             try
             {
-                plcItem = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^POUs^Application Specific^Applications");
+                plcItem = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^POUs^Application_Specific^Applications");
             }
             catch
             {
-                throw new ApplicationException($"Unable to find Axes Application Specific directory in solution");
+                throw new ApplicationException($"ERROR HEREUnable to find Axes Application Specific directory in solution");
             }
             //Clear the folder in the solution explorer
             if (plcItem.ChildCount != 0)
@@ -269,13 +265,11 @@ namespace tcSlnFormBuilder
                 {
                     try
                     {
-                        MessageBox.Show(plcItem.ChildCount.ToString());
-                        MessageBox.Show(plcItem.Child[1].Name);
                         plcItem.DeleteChild(plcItem.Child[1].Name);
                     }
                     catch
                     {
-                        throw new ApplicationException("Unable to delete PLC Item");
+                        throw new ApplicationException("Error, Unable to delete Application_Specific PLC Item");
                     }
                 }
             }
@@ -306,7 +300,7 @@ namespace tcSlnFormBuilder
             ITcSmTreeItem axesPlcItem;
             try
             {
-                axesPlcItem = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^POUs^Application Specific^Axes");
+                axesPlcItem = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^POUs^Application_Specific^Axes");
             }
             catch
             {
@@ -320,7 +314,7 @@ namespace tcSlnFormBuilder
             ITcSmTreeItem appsPlcItem;
             try
             {
-                appsPlcItem = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^POUs^Application Specific^Applications");
+                appsPlcItem = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project^POUs^Application_Specific^Applications");
             }
             catch
             {
