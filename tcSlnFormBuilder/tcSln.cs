@@ -335,6 +335,9 @@ namespace tcSlnFormBuilder
             Directory.CreateDirectory(ConfigFolder + @"\axisXmls");
             Directory.CreateDirectory(ConfigFolder + @"\deviceXmls");
             Directory.CreateDirectory(ConfigFolder + @"\plc\declarations");
+            Directory.CreateDirectory(ConfigFolder + @"\plc\implementations");
+            Directory.CreateDirectory(ConfigFolder + @"\plc\axes");
+            Directory.CreateDirectory(ConfigFolder + @"\plc\applications");
         }
 
 
@@ -421,7 +424,8 @@ namespace tcSlnFormBuilder
                 }
             }
             //Add axes equal to number of xml files in the NC folder
-            addNcAxes(getNcXmlCount());
+           // addNcAxes(getNcXmlCount());
+            addNamedNcAxes();
 
             //Check whether the project already has IO in it and prompt user
             if (getIoCount() != 0)
@@ -441,19 +445,25 @@ namespace tcSlnFormBuilder
             importIoList();
             //Run through all device xmls and import
             importAllIoXmls();
-
+            MessageBox.Show("IO XML Import complete");
             //Setup axis parameters from available axis xmls
             ncConsumeAllMaps();
-
+            MessageBox.Show("NC Parameter import complete");
             //Add the plc "stuff"
             plcImportDeclarations();
-
-            //NEED INSTANCES
+            MessageBox.Show("PLC declarations updated");
+            //New PLC "stuff" to add
+            importApplications();
+            MessageBox.Show("Application Specific PROGs imported");
+            importAxes();
+            MessageBox.Show("Axis PROGs imported");
+            setupProgAction();
+            MessageBox.Show("PROG action updated");
             buildPlcProject();
-            
-            //Map the variables
+            MessageBox.Show("PLC compiled");
             importXmlMap();
-            
+            MessageBox.Show("Import mappings complete");
+
             try
             {
                 //SystemManager.ActivateConfiguration();
@@ -476,7 +486,7 @@ namespace tcSlnFormBuilder
                 return;
             }
 
-            //If no open project, load the selected one
+            //If no open project tell the user to open one
             if (solution == null)
             {
                 MessageBox.Show("Please open the solution first", "Oopsie", MessageBoxButtons.OK);
@@ -492,8 +502,10 @@ namespace tcSlnFormBuilder
             exportAllIoXmls();
             exportIoList();
             exportPlcDec();
+            exportAxes();
+            exportApplications();
             cleanUp();
-            MessageBox.Show("Export complete."+Environment.NewLine + "Please ensure to update MAIN declaration file", "Configuration export", MessageBoxButtons.OK);
+            MessageBox.Show("Export complete."+Environment.NewLine, "Configuration export", MessageBoxButtons.OK);
         }
 
     }

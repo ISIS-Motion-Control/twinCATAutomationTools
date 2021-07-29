@@ -87,6 +87,21 @@ namespace tcSlnFormBuilder
         }
 
         /// <summary>
+        /// Add a single standard stepper axis to the NC task with a given axis name
+        /// </summary>
+        /// <param name="axisName"></param>
+        /// <returns></returns>
+        public Boolean addNamedNcAxis(String axisName)
+        {
+            try
+            {
+                Axes.CreateChild(axisName, 1);
+                return true;
+            }
+            catch { return false; }
+        }
+
+        /// <summary>
         /// Remove NC Task and all axes from solution
         /// </summary>
         /// <returns></returns>
@@ -100,6 +115,22 @@ namespace tcSlnFormBuilder
                 return true;
             }
             catch { return false; }
+        }
+
+        /// <summary>
+        /// Use the file names in the config folder to create axes
+        /// </summary>
+        public void addNamedNcAxes()
+        {
+            string axisFolder = ConfigFolder + AxisDirectory;
+            if(!Directory.Exists(axisFolder))
+            {
+                throw new ApplicationException($"Folder not found: {axisFolder}");
+            }
+            foreach (var file in Directory.GetFiles(axisFolder))
+            {
+                addNamedNcAxis(Path.GetFileNameWithoutExtension(file));
+            }
         }
 
         /// <summary>
@@ -136,7 +167,7 @@ namespace tcSlnFormBuilder
             }
             catch
             {
-                throw new ApplicationException($"Not able to fine {axisName}.");
+                throw new ApplicationException($"Not able to find {axisName}.");
             }
             axisXml.Load(xmlFile);
             try

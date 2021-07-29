@@ -80,6 +80,7 @@
             this.panel5 = new System.Windows.Forms.Panel();
             this.label6 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
@@ -456,7 +457,7 @@
             this.buttonTesting.Location = new System.Drawing.Point(237, 942);
             this.buttonTesting.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonTesting.Name = "buttonTesting";
-            this.buttonTesting.Size = new System.Drawing.Size(267, 96);
+            this.buttonTesting.Size = new System.Drawing.Size(115, 96);
             this.buttonTesting.TabIndex = 51;
             this.buttonTesting.Text = "Test Button\r\n(Might do anything)";
             this.buttonTesting.UseVisualStyleBackColor = true;
@@ -686,6 +687,17 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(360, 942);
+            this.button5.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(115, 96);
+            this.button5.TabIndex = 57;
+            this.button5.Text = "Test Button\r\n(Might do anything)";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -693,6 +705,7 @@
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.ClientSize = new System.Drawing.Size(1776, 1062);
+            this.Controls.Add(this.button5);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.panel4);
@@ -782,6 +795,7 @@
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button5;
     }
 }
 

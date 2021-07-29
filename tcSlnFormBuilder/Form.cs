@@ -171,10 +171,7 @@ namespace tcSlnFormBuilder
 
         private void buttonTesting_Click(object sender, EventArgs e)
         {
-            //mySln.plcAddMainDeclaration();
-            //mySln.plcNewGvlAppDeclaration();
-            //mySln.modifyDeclaration(@"C:\Users\SCooper - work\Documents\Git Repos\autoDeployTools\twinCATAutomationTools\Config Folder\plc\mainDeclaration.txt");
-            mySln.plcImportDeclarations();
+            mySln.exportApplications();
         }
 
         private void toolStripComboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -216,6 +213,11 @@ namespace tcSlnFormBuilder
         private void button2_Click(object sender, EventArgs e)
         {
             mySln.createConfiguration();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            mySln.setupProgAction();
         }
     }
 }
