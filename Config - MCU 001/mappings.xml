@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<VarLinks>
+  <OwnerA Name="TINC^NC-Task 1 SAF^Axes^Axis 1">
+    <OwnerB Name="TIID^Device 1 (EtherCAT)^Term 1 (EK1200)^Term 4 (EL5002)">
+      <Link VarA="Enc^Inputs^In^nDataIn1" VarB="SSI Inputs Channel 1^Counter value" />
+      <Link VarA="Enc^Inputs^In^nState1" VarB="SSI Inputs Channel 1^Status^Data error" />
+      <Link VarA="Enc^Inputs^In^nState1" VarB="SSI Inputs Channel 1^Status^Data mismatch" Size="1" OffsA="3" />
+      <Link VarA="Enc^Inputs^In^nState1" VarB="SSI Inputs Channel 1^Status^Frame error" Size="1" OffsA="1" />
+      <Link VarA="Enc^Inputs^In^nState1" VarB="SSI Inputs Channel 1^Status^Power failure" Size="1" OffsA="2" />
+      <Link VarA="Enc^Inputs^In^nState2" VarB="SSI Inputs Channel 1^Status^Sync error" Size="1" OffsA="5" />
+      <Link VarA="Enc^Inputs^In^nState2" VarB="SSI Inputs Channel 1^Status^TxPDO State" Size="1" OffsA="6" />
+      <Link VarA="Enc^Inputs^In^nState2" VarB="SSI Inputs Channel 1^Status^TxPDO Toggle" Size="1" OffsA="7" />
+      <Link VarA="Enc^Inputs^In^nState4" VarB="WcState^InputToggle" Size="1" OffsA="1" />
+      <Link VarA="Enc^Inputs^In^nState4" VarB="WcState^WcState" />
+    </OwnerB>
+    <OwnerB Name="TIID^Device 1 (EtherCAT)^Term 1 (EK1200)^Term 6 (EL7041-0052)">
+      <Link VarA="Drive^Inputs^In^nState1" VarB="STM Status^Status^Error" Size="1" OffsA="3" />
+      <Link VarA="Drive^Inputs^In^nState1" VarB="STM Status^Status^Moving negative" Size="1" OffsA="5" />
+      <Link VarA="Drive^Inputs^In^nState1" VarB="STM Status^Status^Moving positive" Size="1" OffsA="4" />
+      <Link VarA="Drive^Inputs^In^nState1" VarB="STM Status^Status^Ready" Size="1" OffsA="1" />
+      <Link VarA="Drive^Inputs^In^nState1" VarB="STM Status^Status^Ready to enable" />
+      <Link VarA="Drive^Inputs^In^nState1" VarB="STM Status^Status^Torque reduced" Size="1" OffsA="6" />
+      <Link VarA="Drive^Inputs^In^nState1" VarB="STM Status^Status^Warning" Size="1" OffsA="2" />
+      <Link VarA="Drive^Inputs^In^nState2" VarB="STM Status^Status^Digital input 1" Size="1" OffsA="3" />
+      <Link VarA="Drive^Inputs^In^nState2" VarB="STM Status^Status^Digital input 2" Size="1" OffsA="4" />
+      <Link VarA="Drive^Inputs^In^nState2" VarB="STM Status^Status^Sync error" Size="1" OffsA="5" />
+      <Link VarA="Drive^Inputs^In^nState2" VarB="STM Status^Status^TxPDO Toggle" Size="1" OffsA="7" />
+      <Link VarA="Drive^Inputs^In^nState4" VarB="WcState^InputToggle" Size="1" OffsA="1" />
+      <Link VarA="Drive^Inputs^In^nState4" VarB="WcState^WcState" />
+      <Link VarA="Drive^Outputs^Out^nCtrl1" VarB="STM Control^Control^Enable" />
+      <Link VarA="Drive^Outputs^Out^nCtrl1" VarB="STM Control^Control^Reduce torque" Size="1" OffsA="2" />
+      <Link VarA="Drive^Outputs^Out^nCtrl1" VarB="STM Control^Control^Reset" Size="1" OffsA="1" />
+      <Link VarA="Drive^Outputs^Out^nDataOut2[0]" VarB="STM Velocity^Velocity" />
+    </OwnerB>
+  </OwnerA>
+  <OwnerA Name="TINC^NC-Task 1 SAF^Axes^Axis 2">
+    <OwnerB Name="TIID^Device 1 (EtherCAT)^Term 1 (EK1200)^Term 4 (EL5002)">
+      <Link VarA="Enc^Inputs^In^nDataIn1" VarB="SSI Inputs Channel 2^Counter value" />
+      <Link VarA="Enc^Inputs^In^nState1" VarB="SSI Inputs Channel 2^Status^Data error" />
+      <Link VarA="Enc^Inputs^In^nState1" VarB="SSI Inputs Channel 2^Status^Data mismatch" Size="1" OffsA="3" />
+      <Link VarA="Enc^Inputs^In^nState1" VarB="SSI Inputs Channel 2^Status^Frame error" Size="1" OffsA="1" />
+      <Link VarA="Enc^Inputs^In^nState1" VarB="SSI Inputs Channel 2^Status^Power failure" Size="1" OffsA="2" />
+      <Link VarA="Enc^Inputs^In^nState2" VarB="SSI Inputs Channel 2^Status^Sync error" Size="1" OffsA="5" />
+      <Link VarA="Enc^Inputs^In^nState2" VarB="SSI Inputs Channel 2^Status^TxPDO State" Size="1" OffsA="6" />
+      <Link VarA="Enc^Inputs^In^nState2" VarB="SSI Inputs Channel 2^Status^TxPDO Toggle" Size="1" OffsA="7" />
+      <Link VarA="Enc^Inputs^In^nState4" VarB="WcState^InputToggle" Size="1" OffsA="1" />
+      <Link VarA="Enc^Inputs^In^nState4" VarB="WcState^WcState" />
+    </OwnerB>
+    <OwnerB Name="TIID^Device 1 (EtherCAT)^Term 1 (EK1200)^Term 7 (EL7041-0052)">
+      <Link VarA="Drive^Inputs^In^nState1" VarB="STM Status^Status^Error" Size="1" OffsA="3" />
+      <Link VarA="Drive^Inputs^In^nState1" VarB="STM Status^Status^Moving negative" Size="1" OffsA="5" />
+      <Link VarA="Drive^Inputs^In^nState1" VarB="STM Status^Status^Moving positive" Size="1" OffsA="4" />
+      <Link VarA="Drive^Inputs^In^nState1" VarB="STM Status^Status^Ready" Size="1" OffsA="1" />
+      <Link VarA="Drive^Inputs^In^nState1" VarB="STM Status^Status^Ready to enable" />
+      <Link VarA="Drive^Inputs^In^nState1" VarB="STM Status^Status^Torque reduced" Size="1" OffsA="6" />
+      <Link VarA="Drive^Inputs^In^nState1" VarB="STM Status^Status^Warning" Size="1" OffsA="2" />
+      <Link VarA="Drive^Inputs^In^nState2" VarB="STM Status^Status^Digital input 1" Size="1" OffsA="3" />
+      <Link VarA="Drive^Inputs^In^nState2" VarB="STM Status^Status^Digital input 2" Size="1" OffsA="4" />
+      <Link VarA="Drive^Inputs^In^nState2" VarB="STM Status^Status^Sync error" Size="1" OffsA="5" />
+      <Link VarA="Drive^Inputs^In^nState2" VarB="STM Status^Status^TxPDO Toggle" Size="1" OffsA="7" />
+      <Link VarA="Drive^Inputs^In^nState4" VarB="WcState^InputToggle" Size="1" OffsA="1" />
+      <Link VarA="Drive^Inputs^In^nState4" VarB="WcState^WcState" />
+      <Link VarA="Drive^Outputs^Out^nCtrl1" VarB="STM Control^Control^Enable" />
+      <Link VarA="Drive^Outputs^Out^nCtrl1" VarB="STM Control^Control^Reduce torque" Size="1" OffsA="2" />
+      <Link VarA="Drive^Outputs^Out^nCtrl1" VarB="STM Control^Control^Reset" Size="1" OffsA="1" />
+      <Link VarA="Drive^Outputs^Out^nDataOut2[0]" VarB="STM Velocity^Velocity" />
+    </OwnerB>
+  </OwnerA>
+  <OwnerA Name="TIPC^tc_project_app^tc_project_app Instance">
+    <OwnerB Name="TIID^Device 1 (EtherCAT)^Term 1 (EK1200)^Term 2 (EL1808)">
+      <Link VarA="PlcTask Inputs^GVL.astAxes[1].stInputs.bHomeSensor" VarB="Channel 3^Input" />
+      <Link VarA="PlcTask Inputs^GVL.astAxes[1].stInputs.bLimitBwd" VarB="Channel 2^Input" />
+      <Link VarA="PlcTask Inputs^GVL.astAxes[1].stInputs.bLimitFwd" VarB="Channel 1^Input" />
+      <Link VarA="PlcTask Inputs^GVL.astAxes[2].stInputs.bHomeSensor" VarB="Channel 7^Input" />
+      <Link VarA="PlcTask Inputs^GVL.astAxes[2].stInputs.bLimitBwd" VarB="Channel 5^Input" />
+      <Link VarA="PlcTask Inputs^GVL.astAxes[2].stInputs.bLimitFwd" VarB="Channel 6^Input" />
+    </OwnerB>
+    <OwnerB Name="TIID^Device 1 (EtherCAT)^Term 1 (EK1200)^Term 3 (EL2819)">
+      <Link VarA="PlcTask Outputs^limitsPower.bEnableAxis1Limits" VarB="DIG Outputs^Channel 1^Output" />
+      <Link VarA="PlcTask Outputs^limitsPower.bEnableAxis2Limits" VarB="DIG Outputs^Channel 5^Output" />
+    </OwnerB>
+    <OwnerB Name="TIID^Device 1 (EtherCAT)^Term 1 (EK1200)^Term 5 (EL2014)">
+      <Link VarA="PlcTask Outputs^limitsPower.bEnableAxis1Enc" VarB="DIG Outputs^Channel 1^Output" />
+      <Link VarA="PlcTask Outputs^limitsPower.bEnableAxis2Enc" VarB="DIG Outputs^Channel 2^Output" />
+    </OwnerB>
+    <OwnerB Name="TINC^NC-Task 1 SAF^Axes^Axis 1">
+      <Link VarA="PlcTask Inputs^GVL.astAxes[1].Axis.NcToPlc" VarB="Outputs^ToPlc" />
+      <Link VarA="PlcTask Outputs^GVL.astAxes[1].Axis.PlcToNc" VarB="Inputs^FromPlc" />
+    </OwnerB>
+    <OwnerB Name="TINC^NC-Task 1 SAF^Axes^Axis 2">
+      <Link VarA="PlcTask Inputs^GVL.astAxes[2].Axis.NcToPlc" VarB="Outputs^ToPlc" />
+      <Link VarA="PlcTask Outputs^GVL.astAxes[2].Axis.PlcToNc" VarB="Inputs^FromPlc" />
+    </OwnerB>
+  </OwnerA>
+</VarLinks>

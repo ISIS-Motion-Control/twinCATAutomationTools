@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.5">
+  <POU Name="limitsPower" Id="{7dcb7d67-8fc5-4c4f-a1c9-d3a3a11a9340}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM limitsPower
+VAR
+    bEnableAxis1Limits AT %Q*: BOOL:=TRUE;
+    bEnableAxis2Limits AT %Q*: BOOL:=TRUE;
+    bEnableAxis1Enc AT %Q*: BOOL:=TRUE;
+    bEnableAxis2Enc AT %Q*: BOOL:=TRUE;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <LineIds Name="limitsPower">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
