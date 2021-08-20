@@ -17,7 +17,7 @@ namespace tcSlnFormBuilder
 {
     public partial class tcSln
     {
-
+        
         //FIELDS
         private String _slnPath;    //Dir for new solution
         private String _slnName;    //Name for new solution
@@ -29,7 +29,7 @@ namespace tcSlnFormBuilder
         public XmlDocument xmlDoc;  //Generic holder for xmlDocument
         public String xmlPath;
         private String _slnFolder;
-        
+
         //public String solutionPath;
         public String _configFolder; //Used for all XTIs and XML. Should create folder if doesn't exist
 
@@ -193,18 +193,18 @@ namespace tcSlnFormBuilder
             saveAs(slnPath, slnName);
         }
 
-        
+
 
         /// <summary>
         /// Opens a given TwinCAT solution file
         /// </summary>
-        /// <param name="solutionFilePath"></param>
+        /// <param name="quiet">Do not show the UI</param>
         /// <returns></returns>
-        public Solution openSolution()    //Open existing TwinCAT solution
+        public Solution openSolution(bool quiet = false)    //Open existing TwinCAT solution
         {
             try
             {
-                solution = setupDTE(versionString, true, false, true);
+                solution = setupDTE(versionString, !quiet, quiet, !quiet);
                 solution.Open(SlnPath);
                 SlnFolder = new FileInfo(SlnPath).Directory.FullName;
                 return solution;
@@ -341,20 +341,28 @@ namespace tcSlnFormBuilder
         }
 
 
-        public void setupTestCrate()
+        public void setupTestCrate(bool quiet = false)
         {
             DialogResult dialogResult;
+            Action<String> printFunction;
+
+            if (quiet) {
+                printFunction = (message => Console.Out.WriteLine(message));
+            } else {
+                printFunction = (message => MessageBox.Show(message));
+            }
+
             //Check solution not empty
 
             if (String.IsNullOrEmpty(SlnPath))
             {
-                MessageBox.Show("You have not selected a solution folder", "Oopsie", MessageBoxButtons.OK);
+                printFunction.Invoke("You have not selected a solution folder");
                 return;
             }
             //CHECK CONFIG NOT EMPTY FIRST!!!
             if (ConfigFolder == @"\Config")
             {
-                MessageBox.Show("You have not selected a configuration folder", "Oopsie", MessageBoxButtons.OK);
+                printFunction.Invoke("You have not selected a configuration folder");
                 return;
             }
 
@@ -374,18 +382,20 @@ namespace tcSlnFormBuilder
             //Check we successfully got the project
             if (Project == null)
             {
-                MessageBox.Show("Failed to load in project");
+                printFunction.Invoke("Failed to load in project");
                 cleanUp();
                 return;
             }
 
 
             //User prompt to connect to hardware
-            dialogResult = MessageBox.Show(@"Connect to test crate." + Environment.NewLine + "Once connected press OK to confirm or cancel to exit the automated setup", "Time for a break", MessageBoxButtons.OKCancel);
-            if(dialogResult == DialogResult.Cancel)
-            {
-                cleanUp();
-                return;
+            if (!quiet) {
+                dialogResult = MessageBox.Show(@"Connect to test crate." + Environment.NewLine + "Once connected press OK to confirm or cancel to exit the automated setup", "Time for a break", MessageBoxButtons.OKCancel);
+                if (dialogResult == DialogResult.Cancel)
+                {
+                    cleanUp();
+                    return;
+                }
             }
 
             //Set target platform, we are using TwinCAT RT (x64), PLC will not build if this does not match the build method argument later.
@@ -412,7 +422,12 @@ namespace tcSlnFormBuilder
             //Check whether the project already has axes and prompt user
             if (getAxisCount() != 0)
             {
-                dialogResult = MessageBox.Show("Axes already exists in this solution. Do you want to remove them?", "Time for a break", MessageBoxButtons.YesNoCancel);
+                if (!quiet) {
+                    dialogResult = MessageBox.Show("Axes already exists in this solution. Do you want to remove them?", "Time for a break", MessageBoxButtons.YesNoCancel);
+                } else {
+                    dialogResult = DialogResult.Yes;
+                }
+                
                 if (dialogResult == DialogResult.Cancel)
                 {
                     cleanUp();
@@ -430,7 +445,14 @@ namespace tcSlnFormBuilder
             //Check whether the project already has IO in it and prompt user
             if (getIoCount() != 0)
             {
-                dialogResult = MessageBox.Show("Hardware already exists in this solution. Do you want to remove this?", "Time for a break", MessageBoxButtons.YesNoCancel);
+                if (!quiet)
+                {
+                    dialogResult = MessageBox.Show("Hardware already exists in this solution. Do you want to remove this?", "Time for a break", MessageBoxButtons.YesNoCancel);
+                }
+                else
+                {
+                    dialogResult = DialogResult.Yes;
+                }
                 if (dialogResult == DialogResult.Cancel)
                 {
                     MessageFilter.Revoke();
@@ -445,24 +467,24 @@ namespace tcSlnFormBuilder
             importIoList();
             //Run through all device xmls and import
             importAllIoXmls();
-            MessageBox.Show("IO XML Import complete");
+            printFunction.Invoke("IO XML Import complete");
             //Setup axis parameters from available axis xmls
             ncConsumeAllMaps();
-            MessageBox.Show("NC Parameter import complete");
+            printFunction.Invoke("NC Parameter import complete");
             //Add the plc "stuff"
             plcImportDeclarations();
-            MessageBox.Show("PLC declarations updated");
+            printFunction.Invoke("PLC declarations updated");
             //New PLC "stuff" to add
             importApplications();
-            MessageBox.Show("Application Specific PROGs imported");
+            printFunction.Invoke("Application Specific PROGs imported");
             importAxes();
-            MessageBox.Show("Axis PROGs imported");
+            printFunction.Invoke("Axis PROGs imported");
             setupProgAction();
-            MessageBox.Show("PROG action updated");
+            printFunction.Invoke("PROG action updated");
             buildPlcProject();
-            MessageBox.Show("PLC compiled");
+            printFunction.Invoke("PLC compiled");
             importXmlMap();
-            MessageBox.Show("Import mappings complete");
+            printFunction.Invoke("Import mappings complete");
 
             try
             {
@@ -474,9 +496,9 @@ namespace tcSlnFormBuilder
                 throw new ApplicationException("Unable to activate configuration");
             }
             cleanUp();
-            MessageBox.Show("Success!");
+            printFunction.Invoke("Success!");
         }
-       
+
         public void createConfiguration()
         {
             //CHECK CONFIG NOT EMPTY FIRST!!!
