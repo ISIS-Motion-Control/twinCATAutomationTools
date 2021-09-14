@@ -274,9 +274,15 @@ namespace tcSlnFormBuilder
                 }
             }
             //Import all the items
-            foreach (string filePath in Directory.GetFiles(path))
+            if (Directory.Exists(path))
             {
-                plcItem.CreateChild(Path.GetFileNameWithoutExtension(filePath), 58, null, filePath);
+                foreach (string filePath in Directory.GetFiles(path))
+                {
+                    plcItem.CreateChild(Path.GetFileNameWithoutExtension(filePath), 58, null, filePath);
+                }
+            } else
+            {
+                Console.WriteLine($"WARNING, application folder {path} does not exist");
             }
         }
 
