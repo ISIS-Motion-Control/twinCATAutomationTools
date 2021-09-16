@@ -185,12 +185,13 @@ namespace tcSlnFormBuilder
             string deviceFolder = ConfigFolder + @"\deviceXmls\";
             if (!Directory.Exists(deviceFolder))
             {
-                throw new ApplicationException($"Folder not found: {deviceFolder}");
+                Console.WriteLine($"WARNING: Folder not found: {deviceFolder}, No devices will be loaded");
             }
-
-            foreach (string file in Directory.GetFiles(deviceFolder))
-            {
-                importIoXmls(file);
+            else {
+                foreach (string file in Directory.GetFiles(deviceFolder))
+                {
+                    importIoXmls(file);
+                }
             }
         }
 

@@ -14,15 +14,29 @@ namespace tcSlnFormBuilder
         /// </summary>
 
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
             tcSln myTcSln = new tcSln();
-          
 
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1(myTcSln));
+            if (args.Length > 0) {
+                //Run without a UI
+                //Arguments are VS version, solution, config area
+                Console.Out.WriteLine("Running without UI");
+                myTcSln.versionString = args[0];
+
+                myTcSln.SlnPath = args[1];
+
+                myTcSln.xmlFolderPath = args[2];
+                myTcSln.ConfigFolder = args[2];
+
+                myTcSln.setupTestCrate(true);
+
+            } else {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new Form1(myTcSln));
+            }
         }
 
 
