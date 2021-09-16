@@ -153,7 +153,7 @@ namespace tcSlnFormBuilder
             solution.Create(slnPath, slnName);
             try
             {
-                saveAs(slnPath, slnName);
+                saveAs();
             }
             catch
             {
@@ -190,7 +190,7 @@ namespace tcSlnFormBuilder
                 }
             }
             Project.Save();
-            saveAs(slnPath, slnName);
+            saveAs();
         }
 
 
@@ -258,14 +258,12 @@ namespace tcSlnFormBuilder
         /// <summary>
         /// Save the current solution within a given directory and with a given name
         /// </summary>
-        /// <param name="slnPath"></param>
-        /// <param name="slnName"></param>
         /// <returns></returns>
-        public Boolean saveAs(String slnPath, String slnName)
+        public Boolean saveAs()
         {
             try     
             { 
-                solution.SaveAs(slnPath + @"\" + slnName + @"\" + slnName + ".sln");
+                solution.SaveAs(SlnPath + @"\" + SlnName + @"\" + SlnName + ".sln");
                 return true;
             }
             catch   
@@ -485,10 +483,11 @@ namespace tcSlnFormBuilder
             printFunction.Invoke("PLC compiled");
             importXmlMap();
             printFunction.Invoke("Import mappings complete");
+            saveAs();
 
             try
             {
-                //SystemManager.ActivateConfiguration();
+                SystemManager.ActivateConfiguration();
             }
             catch
             {
