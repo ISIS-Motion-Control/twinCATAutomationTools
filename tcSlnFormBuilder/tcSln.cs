@@ -367,7 +367,7 @@ namespace tcSlnFormBuilder
             //If no open project, load the selected one
             if (solution == null)
             {
-                openSolution(true);
+                openSolution(quiet);
             }
             else //check we have a message filter as using already open project
             {
