@@ -30,11 +30,8 @@ namespace tcSlnFormBuilder
         public String xmlPath;
         private String _slnFolder;
 
-        //public String solutionPath;
         public String _configFolder; //Used for all XTIs and XML. Should create folder if doesn't exist
 
-        public String xmlHwMapPath;
-        public String xmlFolderPath;
         
         public VSVersion version = VSVersion.TWINCAT_SHELL;
         public String versionString = "TWINCAT_SHELL";

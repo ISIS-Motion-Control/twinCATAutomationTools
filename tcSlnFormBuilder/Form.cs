@@ -40,7 +40,7 @@ namespace tcSlnFormBuilder
             configFolderSelect.Text = folderBrowserDialog2.SelectedPath;
             if (configFolderSelect.Text != String.Empty)
             {
-                mySln.xmlFolderPath = folderBrowserDialog2.SelectedPath;
+                //mySln.xmlFolderPath = folderBrowserDialog2.SelectedPath;
                 mySln.ConfigFolder = configFolderSelect.Text;
             }
         }
@@ -193,11 +193,6 @@ namespace tcSlnFormBuilder
             mySln.exportAllAxisXmls();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void button3_Click(object sender, EventArgs e)
         {
             mySln.exportAllIoXmls();
@@ -223,14 +218,24 @@ namespace tcSlnFormBuilder
             mySln.setupProgAction();
         }
 
-        private void solutionFileSelect_TextChanged(object sender, EventArgs e)
+        private void button5_Click_1(object sender, EventArgs e)
         {
-
+            mySln.plcLogin();
         }
 
-        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        private void button6_Click(object sender, EventArgs e)
         {
+            mySln.plcLogout();
+        }
 
+        private void button7_Click(object sender, EventArgs e)
+        {
+            mySln.plcStart();
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            mySln.plcStop();
         }
     }
 }

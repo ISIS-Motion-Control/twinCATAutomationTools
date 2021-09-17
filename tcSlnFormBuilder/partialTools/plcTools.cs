@@ -333,5 +333,33 @@ namespace tcSlnFormBuilder
             plcImp.ImplementationText = impText;
 
         }
+
+        public void plcCmd(string cmdString)
+        {
+            ITcSmTreeItem plcProject = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project");
+            //tc_project_app^tc_project_app Project
+            plcProject.ConsumeXml(cmdString);
+        }
+        public void plcLogin()
+        {
+            string cmdString = "<TreeItem><IECProjectDef><OnlineSettings><Commands><LoginCmd>true</LoginCmd></Commands></OnlineSettings></IECProjectDef></TreeItem>";
+            plcCmd(cmdString);
+        }
+        public void plcLogout()
+        {
+            string cmdString = "<TreeItem><IECProjectDef><OnlineSettings><Commands><LogoutCmd>true</LogoutCmd></Commands></OnlineSettings></IECProjectDef></TreeItem>";
+            plcCmd(cmdString);
+        }
+        public void plcStart()
+        {
+            string cmdString = "<TreeItem><IECProjectDef><OnlineSettings><Commands><StartCmd>true</StartCmd></Commands></OnlineSettings></IECProjectDef></TreeItem>";
+            plcCmd(cmdString);
+        }
+        public void plcStop()
+        {
+            string cmdString = "<TreeItem><IECProjectDef><OnlineSettings><Commands><StopCmd>true</StopCmd></Commands></OnlineSettings></IECProjectDef></TreeItem>";
+            plcCmd(cmdString);
+        }
+
     }
 }
