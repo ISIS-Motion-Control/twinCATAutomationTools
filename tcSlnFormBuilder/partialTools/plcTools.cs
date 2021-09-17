@@ -19,6 +19,7 @@ namespace tcSlnFormBuilder
         private String _impDirectory = @"\implementations";
         private String _axesDirectory = @"\axes";
         private String _appDirectory = @"\applications";
+        private int COMMAND_TIMEOUT = 30000; //Login/start/stop timeout in ms.
 
 
         public ITcSmTreeItem Plc
@@ -52,6 +53,39 @@ namespace tcSlnFormBuilder
             get { return _appDirectory; }
             set { _appDirectory = value; }
         }
+
+        enum PLCAction
+        {
+            LOGIN = 0, LOGOUT = 1, START = 2, STOP = 3, RESET_COLD = 4, RESET_ORIGIN = 5
+        }
+        private static String xmlTemplate = @"<TreeItem>
+                                    <IECProjectDef>
+                                        <OnlineSettings>
+                                                <Commands>
+                                                        <LoginCmd>{0}</LoginCmd>
+                                                        <LogoutCmd>{1}</LogoutCmd>
+                                                        <StartCmd>{2}</StartCmd>
+                                                        <StopCmd>{3}</StopCmd>
+                                                        <ResetColdCmd>{4}</ResetColdCmd>
+                                                        <ResetOriginCmd>{5}</ResetOriginCmd>
+                                                </Commands>
+                                        </OnlineSettings>
+                                    </IECProjectDef>
+                                </TreeItem>";
+        /// <summary>
+        /// Creates the xml required to interact with the PLC.
+        /// The difference between each action is translated into a true/false list in the xml. e.g. a login has LoginCmd true and all other Cmds false.
+        /// </summary>
+        /// <param name="action">The action to perform</param>
+        /// <returns>The constructed xml</returns>
+        private String createXMLString(PLCAction action)
+        {
+            List<bool> options = Enumerable.Repeat(false, 6).ToList();
+            options[(int)action] = true;
+            List<String> strOptions = options.ConvertAll(o => o.ToString().ToLowerInvariant());
+            return String.Format(xmlTemplate, strOptions.ToArray());
+        }
+
 
         /// <summary>
         /// Return count of PLC projects in solution
@@ -334,31 +368,63 @@ namespace tcSlnFormBuilder
 
         }
 
-        public void plcCmd(string cmdString)
+        public bool plcLogin()
         {
             ITcSmTreeItem plcProject = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project");
-            //tc_project_app^tc_project_app Project
-            plcProject.ConsumeXml(cmdString);
+            plcProject.ConsumeXml(createXMLString(PLCAction.LOGIN));
+
+            if (!checkWithTimeout(COMMAND_TIMEOUT, () => checkXmlIsString(plcProject, "LoggedIn", "true")))
+            {
+                Console.WriteLine("Failed to login!");
+                return false;
+            }
+            return true;
         }
-        public void plcLogin()
+        public bool plcLogout()
         {
-            string cmdString = "<TreeItem><IECProjectDef><OnlineSettings><Commands><LoginCmd>true</LoginCmd></Commands></OnlineSettings></IECProjectDef></TreeItem>";
-            plcCmd(cmdString);
+            ITcSmTreeItem plcProject = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project");
+            plcProject.ConsumeXml(createXMLString(PLCAction.LOGOUT));
+
+            if (!checkWithTimeout(COMMAND_TIMEOUT, () => checkXmlIsString(plcProject, "LoggedIn", "false")))
+            {
+                Console.WriteLine("Failed to logout!");
+                return false;
+            }
+            return true;
         }
-        public void plcLogout()
+        public bool plcStart()
         {
-            string cmdString = "<TreeItem><IECProjectDef><OnlineSettings><Commands><LogoutCmd>true</LogoutCmd></Commands></OnlineSettings></IECProjectDef></TreeItem>";
-            plcCmd(cmdString);
+            ITcSmTreeItem plcProject = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project");
+            plcProject.ConsumeXml(createXMLString(PLCAction.START));
+
+            if (!checkWithTimeout(COMMAND_TIMEOUT, () => checkXmlIsString(plcProject, "PlcAppState", "Run")))
+            {
+                Console.WriteLine("Failed to start!");
+                return false;
+            }
+            return true;
         }
-        public void plcStart()
+        public bool plcStop()
         {
-            string cmdString = "<TreeItem><IECProjectDef><OnlineSettings><Commands><StartCmd>true</StartCmd></Commands></OnlineSettings></IECProjectDef></TreeItem>";
-            plcCmd(cmdString);
+            ITcSmTreeItem plcProject = SystemManager.LookupTreeItem("TIPC^tc_project_app^tc_project_app Project");
+            plcProject.ConsumeXml(createXMLString(PLCAction.STOP));
+
+            if (!checkWithTimeout(COMMAND_TIMEOUT, () => checkXmlIsString(plcProject, "PlcAppState", "Stop")))
+            {
+                Console.WriteLine("Failed to stop!");
+                return false;
+            }
+
+            return true;
         }
-        public void plcStop()
+
+        //private void setProjectToBoot(ITcPlcProject project)
+        private void SetProjectToBoot()
         {
-            string cmdString = "<TreeItem><IECProjectDef><OnlineSettings><Commands><StopCmd>true</StopCmd></Commands></OnlineSettings></IECProjectDef></TreeItem>";
-            plcCmd(cmdString);
+            ITcSmTreeItem plcProject = SystemManager.LookupTreeItem("TIPC^tc_project_app");
+            ITcPlcProject project = (ITcPlcProject)plcProject;
+            project.BootProjectAutostart = true;
+            project.GenerateBootProject(true);
         }
 
     }

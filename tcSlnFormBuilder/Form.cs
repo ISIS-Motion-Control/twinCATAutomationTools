@@ -237,5 +237,10 @@ namespace tcSlnFormBuilder
         {
             mySln.plcStop();
         }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            mySln.startRestart();
+        }
     }
 }

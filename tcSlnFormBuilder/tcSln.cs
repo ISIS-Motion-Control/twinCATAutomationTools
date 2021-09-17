@@ -482,9 +482,13 @@ namespace tcSlnFormBuilder
             printFunction.Invoke("Import mappings complete");
             saveAs();
 
+            SetProjectToBoot();
+            printFunction.Invoke("Project autostart set");
+
             try
             {
-                SystemManager.ActivateConfiguration();               
+                SystemManager.ActivateConfiguration();
+                System.Threading.Thread.Sleep(1000);
             }
             catch
             {
@@ -494,6 +498,7 @@ namespace tcSlnFormBuilder
             try
             {
                 SystemManager.StartRestartTwinCAT();
+                System.Threading.Thread.Sleep(1000);
             }
             catch
             {
@@ -504,11 +509,46 @@ namespace tcSlnFormBuilder
             {
                 MessageBox.Show("TwinCAT is running");
                 plcLogin();
+                System.Threading.Thread.Sleep(1000);
                 plcStart();
+                System.Threading.Thread.Sleep(1000);
             }
 
             cleanUp();
             printFunction.Invoke("Success!");
+        }
+        public void startRestart()
+        {
+            SystemManager.StartRestartTwinCAT();
+        }
+
+        private Boolean checkWithTimeout(int timeout, Func<Boolean> checkMethod)
+        {
+            const int TIME_BETWEEN_CHECKS = 500;
+            for (int i = 0; i < timeout / TIME_BETWEEN_CHECKS; i++)
+            {
+                if (checkMethod())
+                {
+                    return true;
+                }
+                //this.utils.printErrors();
+                System.Threading.Thread.Sleep(TIME_BETWEEN_CHECKS);
+            }
+            return checkMethod();
+        }
+        /// <summary>
+        /// Checks that the specified tag in the XML from the project tree matches the expected value. 
+        /// </summary>
+        /// <param name="plcProjectItem">The tree to search.</param> 
+        /// <param name="tag">The tag to search for.</param> 
+        /// <param name="expected">The expected value.</param>
+        /// <returns>True if the value is found, else false.</returns>
+        private Boolean checkXmlIsString(ITcSmTreeItem plcProjectItem, String tag, String expected)
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(plcProjectItem.ProduceXml(true));
+            XmlNodeList loggedIn = doc.SelectNodes(String.Format("//{0}", tag));
+            return loggedIn.Item(0).InnerText.Equals(expected);
         }
 
         public void createConfiguration()
