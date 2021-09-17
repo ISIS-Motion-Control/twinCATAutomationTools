@@ -510,8 +510,9 @@ namespace tcSlnFormBuilder
             //If no open project tell the user to open one
             if (solution == null)
             {
-                MessageBox.Show("Please open the solution first", "Oopsie", MessageBoxButtons.OK);
-                return;
+                //MessageBox.Show("Please open the solution first", "Oopsie", MessageBoxButtons.OK);
+                //return;
+                openSolution();
             }
             if (!MessageFilter.IsRegistered)
                 MessageFilter.Register();

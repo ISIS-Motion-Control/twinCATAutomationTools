@@ -38,8 +38,11 @@ namespace tcSlnFormBuilder
         {
             folderBrowserDialog2.ShowDialog();
             configFolderSelect.Text = folderBrowserDialog2.SelectedPath;
-            mySln.xmlFolderPath = folderBrowserDialog2.SelectedPath;
-            mySln.ConfigFolder = configFolderSelect.Text;
+            if (configFolderSelect.Text != String.Empty)
+            {
+                mySln.xmlFolderPath = folderBrowserDialog2.SelectedPath;
+                mySln.ConfigFolder = configFolderSelect.Text;
+            }
         }
 
         //Open selected solution file
@@ -218,6 +221,16 @@ namespace tcSlnFormBuilder
         private void button5_Click(object sender, EventArgs e)
         {
             mySln.setupProgAction();
+        }
+
+        private void solutionFileSelect_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
