@@ -78,6 +78,11 @@
             this.label6 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.button5 = new System.Windows.Forms.Button();
+            this.button6 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
+            this.button9 = new System.Windows.Forms.Button();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
@@ -217,7 +222,6 @@
             this.solutionFileSelect.TabIndex = 27;
             this.solutionFileSelect.Text = "Click to select solution file";
             this.solutionFileSelect.Click += new System.EventHandler(this.solutionFileSelect_Click);
-            this.solutionFileSelect.TextChanged += new System.EventHandler(this.solutionFileSelect_TextChanged);
             // 
             // openSolutionSelect
             // 
@@ -280,7 +284,7 @@
             // 
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
             this.pictureBox1.Location = new System.Drawing.Point(498, 487);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(167, 162);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -430,7 +434,7 @@
             this.panel1.Controls.Add(this.buttonDeleteAxes);
             this.panel1.Controls.Add(this.buttonImportNcXmls);
             this.panel1.Location = new System.Drawing.Point(13, 435);
-            this.panel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panel1.Margin = new System.Windows.Forms.Padding(2);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(133, 215);
             this.panel1.TabIndex = 52;
@@ -456,7 +460,7 @@
             this.panel2.Controls.Add(this.buttonCleanUp);
             this.panel2.Controls.Add(this.butGrabProject);
             this.panel2.Location = new System.Drawing.Point(13, 146);
-            this.panel2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panel2.Margin = new System.Windows.Forms.Padding(2);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(133, 179);
             this.panel2.TabIndex = 54;
@@ -481,7 +485,7 @@
             this.panel3.Controls.Add(this.buttonConsumeMappings);
             this.panel3.Controls.Add(this.buttonClearMappings);
             this.panel3.Location = new System.Drawing.Point(158, 435);
-            this.panel3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panel3.Margin = new System.Windows.Forms.Padding(2);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(179, 143);
             this.panel3.TabIndex = 54;
@@ -508,7 +512,7 @@
             this.panel4.Controls.Add(this.button3);
             this.panel4.Controls.Add(this.button4);
             this.panel4.Location = new System.Drawing.Point(158, 146);
-            this.panel4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panel4.Margin = new System.Windows.Forms.Padding(2);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(133, 216);
             this.panel4.TabIndex = 55;
@@ -600,7 +604,7 @@
             this.panel5.Controls.Add(this.buttonExportDevice1);
             this.panel5.Controls.Add(this.buttonDeleteIo);
             this.panel5.Location = new System.Drawing.Point(349, 435);
-            this.panel5.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panel5.Margin = new System.Windows.Forms.Padding(2);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(133, 215);
             this.panel5.TabIndex = 54;
@@ -633,7 +637,56 @@
             this.richTextBox1.Size = new System.Drawing.Size(411, 212);
             this.richTextBox1.TabIndex = 57;
             this.richTextBox1.Text = resources.GetString("richTextBox1.Text");
-            this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(498, 256);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(75, 23);
+            this.button5.TabIndex = 58;
+            this.button5.Text = "Plc Login";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click_1);
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(498, 288);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(75, 23);
+            this.button6.TabIndex = 59;
+            this.button6.Text = "Plc Login";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(579, 256);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(75, 23);
+            this.button7.TabIndex = 60;
+            this.button7.Text = "Plc Start";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(579, 288);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(75, 23);
+            this.button8.TabIndex = 61;
+            this.button8.Text = "Plc Stop";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(555, 334);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(75, 23);
+            this.button9.TabIndex = 62;
+            this.button9.Text = "Start/Restart";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
             // Form1
             // 
@@ -642,6 +695,11 @@
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.ClientSize = new System.Drawing.Size(1184, 690);
+            this.Controls.Add(this.button9);
+            this.Controls.Add(this.button8);
+            this.Controls.Add(this.button7);
+            this.Controls.Add(this.button6);
+            this.Controls.Add(this.button5);
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.panel5);
@@ -661,7 +719,6 @@
             this.Name = "Form1";
             this.Padding = new System.Windows.Forms.Padding(7, 0, 7, 6);
             this.Text = "TwinCAT Automation";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -726,6 +783,11 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button button9;
     }
 }
 

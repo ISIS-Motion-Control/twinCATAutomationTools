@@ -26,10 +26,7 @@ namespace tcSlnFormBuilder
                 myTcSln.versionString = args[0];
 
                 myTcSln.SlnPath = args[1];
-
-                myTcSln.xmlFolderPath = args[2];
                 myTcSln.ConfigFolder = args[2];
-
                 myTcSln.setupTestCrate(true);
 
             } else {
