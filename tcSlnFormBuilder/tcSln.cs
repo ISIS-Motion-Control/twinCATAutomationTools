@@ -484,13 +484,29 @@ namespace tcSlnFormBuilder
 
             try
             {
-                SystemManager.ActivateConfiguration();
+                SystemManager.ActivateConfiguration();               
             }
             catch
             {
                 cleanUp();
                 throw new ApplicationException("Unable to activate configuration");
             }
+            try
+            {
+                SystemManager.StartRestartTwinCAT();
+            }
+            catch
+            {
+                cleanUp();
+                throw new ApplicationException("Issue starting controller");
+            }
+            if(SystemManager.IsTwinCATStarted())
+            {
+                MessageBox.Show("TwinCAT is running");
+                plcLogin();
+                plcStart();
+            }
+
             cleanUp();
             printFunction.Invoke("Success!");
         }
