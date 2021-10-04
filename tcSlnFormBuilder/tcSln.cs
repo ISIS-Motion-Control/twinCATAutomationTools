@@ -339,13 +339,7 @@ namespace tcSlnFormBuilder
         public void setupTestCrate(bool quiet = false)
         {
             DialogResult dialogResult;
-            Action<String> printFunction;
-
-            if (quiet) {
-                printFunction = (message => Console.Out.WriteLine(message));
-            } else {
-                printFunction = (message => MessageBox.Show(message));
-            }
+            Action<string> printFunction = setUpPrintFunction(quiet);
 
             //Check solution not empty
 
@@ -371,7 +365,7 @@ namespace tcSlnFormBuilder
                 if (!MessageFilter.IsRegistered)
                     MessageFilter.Register();
             }
-            
+
             //populate the "project" object
             Project = grabSolutionProject();
             //Check we successfully got the project
@@ -384,7 +378,8 @@ namespace tcSlnFormBuilder
 
 
             //User prompt to connect to hardware
-            if (!quiet) {
+            if (!quiet)
+            {
                 dialogResult = MessageBox.Show(@"Connect to test crate." + Environment.NewLine + "Once connected press OK to confirm or cancel to exit the automated setup", "Time for a break", MessageBoxButtons.OKCancel);
                 if (dialogResult == DialogResult.Cancel)
                 {
@@ -400,7 +395,7 @@ namespace tcSlnFormBuilder
 
             //Solution loaded and project loaded
             //Next task: add NC and parameterise 
-            
+
             //Check if an NC task exists, create if not (task exists in default tc_generic code)
             try
             {
@@ -417,12 +412,15 @@ namespace tcSlnFormBuilder
             //Check whether the project already has axes and prompt user
             if (getAxisCount() != 0)
             {
-                if (!quiet) {
+                if (!quiet)
+                {
                     dialogResult = MessageBox.Show("Axes already exists in this solution. Do you want to remove them?", "Time for a break", MessageBoxButtons.YesNoCancel);
-                } else {
+                }
+                else
+                {
                     dialogResult = DialogResult.Yes;
                 }
-                
+
                 if (dialogResult == DialogResult.Cancel)
                 {
                     cleanUp();
@@ -434,7 +432,7 @@ namespace tcSlnFormBuilder
                 }
             }
             //Add axes equal to number of xml files in the NC folder
-           // addNcAxes(getNcXmlCount());
+            // addNcAxes(getNcXmlCount());
             addNamedNcAxes();
 
             //Check whether the project already has IO in it and prompt user
@@ -481,6 +479,28 @@ namespace tcSlnFormBuilder
             importXmlMap();
             printFunction.Invoke("Import mappings complete");
             saveAs();
+        }
+
+        private static Action<string> setUpPrintFunction(bool quiet)
+        {
+            Action<String> printFunction;
+
+            if (quiet)
+            {
+                printFunction = (message => Console.Out.WriteLine(message));
+            }
+            else
+            {
+                printFunction = (message => MessageBox.Show(message));
+            }
+
+            return printFunction;
+        }
+
+        public void runPLCsolution(bool quiet=false)
+        {
+            Action<string> printFunction = setUpPrintFunction(quiet);
+
 
             SetProjectToBoot();
             printFunction.Invoke("Project autostart set");
@@ -505,7 +525,7 @@ namespace tcSlnFormBuilder
                 cleanUp();
                 throw new ApplicationException("Issue starting controller");
             }
-            if(SystemManager.IsTwinCATStarted())
+            if (SystemManager.IsTwinCATStarted())
             {
                 MessageBox.Show("TwinCAT is running");
                 plcLogin();
@@ -517,6 +537,7 @@ namespace tcSlnFormBuilder
             cleanUp();
             printFunction.Invoke("Success!");
         }
+
         public void startRestart()
         {
             SystemManager.StartRestartTwinCAT();
