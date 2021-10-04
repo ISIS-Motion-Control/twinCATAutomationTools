@@ -78,7 +78,7 @@ namespace tcSlnFormBuilder
         private static int RunPLCSolution(tcSln myTcSln, RunOptions opts) {
             myTcSln.SlnPath = opts.SlnPath;
             myTcSln.versionString = opts.Version;
-            myTcSln.runPLCsolution();
+            myTcSln.runPLCsolution(true);
             return 0; }
 
 
