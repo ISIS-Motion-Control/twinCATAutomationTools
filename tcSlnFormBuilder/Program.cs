@@ -34,6 +34,9 @@ namespace tcSlnFormBuilder
         {
             [Option('s', "sln_path", Required = true, HelpText = "The PLC solution path to build")]
             public String SlnPath { get; set; }
+
+            [Option('v', "version", Required = true, HelpText = "Set MSCV version, eg VS_2019 for VS2019")]
+            public String Version { get; set; }
         }
 
 
@@ -74,6 +77,7 @@ namespace tcSlnFormBuilder
 
         private static int RunPLCSolution(tcSln myTcSln, RunOptions opts) {
             myTcSln.SlnPath = opts.SlnPath;
+            myTcSln.versionString = opts.Version;
             myTcSln.runPLCsolution();
             return 0; }
 

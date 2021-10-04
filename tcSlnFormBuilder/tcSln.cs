@@ -501,6 +501,17 @@ namespace tcSlnFormBuilder
         {
             Action<string> printFunction = setUpPrintFunction(quiet);
 
+            //If no open project, load the selected one
+            if (solution == null)
+            {
+                openSolution(quiet);
+            }
+            else //check we have a message filter as using already open project
+            {
+                if (!MessageFilter.IsRegistered)
+                    MessageFilter.Register();
+            }
+
 
             SetProjectToBoot();
             printFunction.Invoke("Project autostart set");
