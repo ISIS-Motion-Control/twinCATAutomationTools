@@ -355,16 +355,7 @@ namespace tcSlnFormBuilder
                 return;
             }
 
-            //If no open project, load the selected one
-            if (solution == null)
-            {
-                openSolution(quiet);
-            }
-            else //check we have a message filter as using already open project
-            {
-                if (!MessageFilter.IsRegistered)
-                    MessageFilter.Register();
-            }
+            openProject(quiet);
 
             //populate the "project" object
             Project = grabSolutionProject();
@@ -501,17 +492,7 @@ namespace tcSlnFormBuilder
         {
             Action<string> printFunction = setUpPrintFunction(quiet);
 
-            //If no open project, load the selected one
-            if (solution == null)
-            {
-                openSolution(quiet);
-            }
-            else //check we have a message filter as using already open project
-            {
-                if (!MessageFilter.IsRegistered)
-                    MessageFilter.Register();
-            }
-
+            openProject(quiet);
 
             SetProjectToBoot();
             printFunction.Invoke("Project autostart set");
@@ -547,6 +528,20 @@ namespace tcSlnFormBuilder
 
             cleanUp();
             printFunction.Invoke("Success!");
+        }
+
+        private void openProject(bool quiet)
+        {
+            //If no open project, load the selected one
+            if (solution == null)
+            {
+                openSolution(quiet);
+            }
+            else //check we have a message filter as using already open project
+            {
+                if (!MessageFilter.IsRegistered)
+                    MessageFilter.Register();
+            }
         }
 
         public void startRestart()
