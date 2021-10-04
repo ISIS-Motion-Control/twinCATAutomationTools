@@ -256,17 +256,10 @@ namespace tcSlnFormBuilder
         /// Save the current solution within a given directory and with a given name
         /// </summary>
         /// <returns></returns>
-        public Boolean saveAs()
+        public void saveAs()
         {
-            try     
-            { 
-                solution.SaveAs(SlnPath + @"\" + SlnName + @"\" + SlnName + ".sln");
-                return true;
-            }
-            catch   
-            {
-                return false; 
-            }
+            Project.Save();
+            solution.SaveAs(SlnPath);
         }
 
         //<Not used>
