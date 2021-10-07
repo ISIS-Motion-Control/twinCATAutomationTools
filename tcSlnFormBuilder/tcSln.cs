@@ -512,7 +512,10 @@ namespace tcSlnFormBuilder
             }
             if (SystemManager.IsTwinCATStarted())
             {
-                MessageBox.Show("TwinCAT is running");
+                if (quiet == false)
+                {
+                    MessageBox.Show("TwinCAT is running");
+                }
                 plcLogin();
                 System.Threading.Thread.Sleep(1000);
                 plcStart();
