@@ -107,6 +107,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="tcSln.cs" />
+    <Compile Include="twinCatSolution.cs" />
     <Compile Include="VSVersion.cs" />
     <Compile Include="partialTools\NcTools.cs" />
     <EmbeddedResource Include="Form.resx">
