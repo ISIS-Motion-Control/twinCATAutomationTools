@@ -1,23 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Windows.Forms;
 using TCatSysManagerLib;
 using System.Diagnostics;
 using EnvDTE;
 using System.IO;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Microsoft.VisualBasic;
-using System.Runtime.InteropServices;
+
 
 namespace tcSlnFormBuilder
 {
     public partial class tcSln
     {
+
         
+
+
+
         //FIELDS
         private String _slnPath;    //Dir for new solution
         private String _slnName;    //Name for new solution
