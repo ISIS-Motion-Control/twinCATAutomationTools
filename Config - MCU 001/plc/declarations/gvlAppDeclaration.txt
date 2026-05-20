@@ -1,4 +1,4 @@
-tc_project_app^tc_project_app Project^GVLs^GVL_APP
+TIPC^tc_project_app^tc_project_app Project^GVLs^GVL_APP
 replace
 
 
@@ -9,4 +9,5 @@ END_VAR
 
 VAR_GLOBAL CONSTANT
     nAXIS_NUM : UINT:=2;
+    nPNEUMATIC_AXIS_NUM : UINT:=0;
 END_VAR
